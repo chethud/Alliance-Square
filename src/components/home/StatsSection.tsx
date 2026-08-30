@@ -52,7 +52,7 @@ function AnimatedStatValue({
   }, [play, target, suffix, format, reduceMotion]);
 
   return (
-    <p className="text-4xl font-extrabold leading-none tabular-nums text-white sm:text-5xl md:text-6xl lg:text-7xl">
+    <p className="text-3xl font-extrabold leading-none tabular-nums text-white sm:text-4xl md:text-5xl lg:text-6xl">
       {display}
     </p>
   );
@@ -85,16 +85,16 @@ export function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      className="section-pad relative overflow-hidden bg-premium-dark"
+      className="relative overflow-hidden bg-premium-dark py-5 md:py-6"
       aria-label="Company statistics"
     >
       <div className="absolute inset-0 bg-mesh-dark opacity-60" aria-hidden="true" />
-      <div className="container-main relative py-8 md:py-10 lg:py-12">
-        <div className="grid grid-cols-2 items-center gap-x-4 gap-y-10 md:grid-cols-4 md:gap-y-0">
+      <div className="container-main relative flex min-h-[132px] items-center md:min-h-[148px]">
+        <div className="grid w-full grid-cols-2 items-center gap-x-3 gap-y-6 md:grid-cols-4 md:gap-y-0">
           {statItems.map((item, index) => (
             <div
               key={item.label}
-              className={`flex min-h-[128px] flex-col items-center justify-center px-4 text-center md:min-h-[160px] md:px-6 ${
+              className={`flex flex-col items-center justify-center px-3 text-center md:px-5 ${
                 index > 0 ? "md:border-l md:border-white/10" : ""
               }`}
             >
@@ -104,7 +104,7 @@ export function StatsSection() {
                 format={item.format}
                 play={visible}
               />
-              <p className="mt-3 flex min-h-[2.75rem] max-w-[180px] items-center justify-center text-sm leading-snug text-white/55 md:min-h-[3rem] md:text-base">
+              <p className="mt-2 max-w-[160px] text-xs leading-snug text-white/55 md:max-w-[180px] md:text-sm">
                 {item.label}
               </p>
             </div>
