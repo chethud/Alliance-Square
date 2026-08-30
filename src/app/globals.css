@@ -31,11 +31,28 @@
   }
 
   .section-spacing {
-    @apply py-20 md:py-28 lg:py-32;
+    @apply py-12 md:py-14 lg:py-16;
+  }
+
+  .section-spacing + .section-spacing {
+    @apply pt-10 md:pt-12 lg:pt-14;
   }
 
   .section-content {
-    @apply mt-12 lg:mt-14;
+    @apply mt-8 lg:mt-10;
+  }
+
+  .section-pad {
+    @apply py-12 md:py-14 lg:py-16;
+  }
+
+  .section-pad + .section-pad {
+    @apply pt-0;
+  }
+
+  .section-pad + .section-spacing,
+  .section-spacing + .section-pad {
+    @apply pt-10 md:pt-12 lg:pt-14;
   }
 
   .label-upper {
@@ -258,4 +275,14 @@
 
 .why-mysuru-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 169, 232, 0.45);
+}
+
+/* Why Mysuru story icons — fixed size even if utility classes fail to load */
+.story-visual {
+  display: block;
+  flex-shrink: 0;
+  width: 140px;
+  height: 48px;
+  max-width: 140px;
+  margin-top: 2.5rem;
 }

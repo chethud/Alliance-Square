@@ -14,7 +14,7 @@ export function ApartmentListing() {
           description="Explore premium apartments for sale in Mysuru from Alliance Square Properties."
         />
 
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           {apartments.map((apt, index) => (
             <FadeIn key={apt.id} delay={index * 0.1}>
               <Link href="/contact" className="premium-card group block">

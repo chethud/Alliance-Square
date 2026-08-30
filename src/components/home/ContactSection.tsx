@@ -10,7 +10,7 @@ export function ContactSection() {
       <div className="container-main">
         <SectionHeader label="Contact" title="Alliance Square Properties" />
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-2">
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="space-y-6">
             <FadeIn delay={0.1}>
               <div className="surface-card">

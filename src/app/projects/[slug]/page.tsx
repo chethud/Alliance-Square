@@ -64,7 +64,7 @@ export default async function ProjectPage({ params }: PageProps) {
           />
         </div>
 
-        <div className="container-main relative -mt-32 pb-12 md:-mt-36">
+        <div className="container-main relative -mt-32 pb-8 md:-mt-36 md:pb-10">
           <nav aria-label="Breadcrumb" className="mb-6">
             <ol className="flex flex-wrap items-center gap-2 text-sm text-white/60">
               <li>
@@ -107,9 +107,9 @@ export default async function ProjectPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="section-spacing bg-off-white pt-0">
-        <div className="container-main grid gap-16 lg:grid-cols-12">
-          <div className="space-y-16 lg:col-span-8">
+      <section className="section-spacing bg-off-white pt-0 pb-12 md:pb-14">
+        <div className="container-main grid gap-10 lg:grid-cols-12">
+          <div className="space-y-10 lg:col-span-8">
             <FadeIn>
               <div>
                 <h2 className="font-bold text-3xl text-charcoal">Overview</h2>
@@ -206,19 +206,19 @@ export default async function ProjectPage({ params }: PageProps) {
       </section>
 
       {related.length > 0 && (
-        <section className="section-spacing bg-white">
+        <section className="section-spacing bg-white pt-0">
           <div className="container-main">
             <SectionHeader
               label="Explore More"
               title="Related Projects"
               description="Discover similar layouts and investment opportunities across Mysuru."
             />
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
               {related.map((p) => (
                 <ProjectCard key={p.id} project={p} />
               ))}
             </div>
-            <div className="mt-10 text-center">
+            <div className="mt-8 text-center">
               <Link href="/layouts" className="link-arrow">
                 View All Layouts
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />

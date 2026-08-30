@@ -5,9 +5,9 @@ import { company } from "@/data/company";
 
 export function BrandIntro() {
   return (
-    <section className="bg-white pt-10 pb-20 md:pt-12 md:pb-28 lg:pt-14 lg:pb-32" aria-labelledby="who-we-are">
+    <section className="section-pad bg-white pt-10 md:pt-12 lg:pt-14" aria-labelledby="who-we-are">
       <div className="container-main">
-        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-20">
+        <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-6">
             <SectionHeader
               label="Who We Are"

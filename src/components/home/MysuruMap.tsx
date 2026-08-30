@@ -29,7 +29,7 @@ export function MysuruMap() {
   const active = mapMarkers.find((m) => m.projectSlug === activeMarker);
 
   return (
-    <section id="mysuru-map" className="bg-off-white pt-8 pb-20 md:pt-10 md:pb-28 lg:pt-12 lg:pb-32" aria-labelledby="map-heading">
+    <section id="mysuru-map" className="section-pad bg-off-white" aria-labelledby="map-heading">
       <div className="container-main">
         <SectionHeader
           label="Project Locations"
@@ -37,7 +37,7 @@ export function MysuruMap() {
           description="Explore Alliance Square projects across Mysuru and key growth corridors."
         />
 
-        <div className="mt-14 grid items-stretch gap-8 lg:grid-cols-12 lg:gap-10">
+        <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-12 lg:gap-8">
           <div className="relative h-[420px] overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle lg:col-span-8 lg:h-[640px]">
             <div className="absolute inset-0 z-0">
               <MysuruMapView

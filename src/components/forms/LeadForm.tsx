@@ -17,7 +17,7 @@ export function LeadForm() {
     <section className="section-spacing bg-premium-dark relative overflow-hidden" aria-labelledby="lead-form-heading">
       <div className="absolute inset-0 bg-mesh-dark opacity-50" />
       <div className="container-main relative">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
           <SectionHeader
             label="Get in Touch"
             title="Let's Find Your Next Address."

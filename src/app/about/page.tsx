@@ -34,7 +34,7 @@ export default function AboutPage() {
 
       <section className="section-spacing bg-off-white">
         <div className="container-main">
-          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+          <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-14">
             <div className="space-y-6">
               <SectionHeader
                 label="Property Portal"

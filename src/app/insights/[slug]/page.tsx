@@ -91,7 +91,7 @@ export default async function InsightPage({ params }: PageProps) {
           </div>
         </FadeIn>
 
-        <div className="mt-16 text-center">
+        <div className="mt-10 text-center">
           <Link href="/insights" className="link-arrow">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to Insights

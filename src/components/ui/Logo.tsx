@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { brandLogo } from "@/data/images";
+import { brandLogo, brandLogoLight } from "@/data/images";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
+  variant?: "default" | "light";
 }
 
-export function Logo({ className }: LogoProps) {
+export function Logo({ className, variant = "default" }: LogoProps) {
   return (
     <Link
       href="/"
@@ -15,11 +16,11 @@ export function Logo({ className }: LogoProps) {
       aria-label="Alliance Square Properties - Home"
     >
       <Image
-        src={brandLogo}
+        src={variant === "light" ? brandLogoLight : brandLogo}
         alt="Alliance Square Property Management & Consultants"
         width={220}
         height={56}
-        className="h-9 w-auto md:h-10"
+        className={cn("h-9 w-auto md:h-10")}
         priority
       />
     </Link>

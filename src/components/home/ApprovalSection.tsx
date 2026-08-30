@@ -7,7 +7,7 @@ export function ApprovalSection() {
   return (
     <section id="approval-trust" className="section-spacing bg-off-white" aria-labelledby="approval-heading">
       <div className="container-main">
-        <div className="grid gap-16 lg:grid-cols-2">
+        <div className="grid gap-10 lg:grid-cols-2">
           <div>
             <SectionHeader
               label="Trust & Compliance"

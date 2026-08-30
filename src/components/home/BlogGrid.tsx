@@ -9,7 +9,7 @@ export function BlogGrid() {
   const posts = blogPosts.slice(0, 3);
 
   return (
-    <section className="bg-off-white pt-8 pb-20 md:pt-10 md:pb-28 lg:pt-12 lg:pb-32" aria-labelledby="insights-heading">
+    <section className="section-pad bg-off-white" aria-labelledby="insights-heading">
       <div className="container-main">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <SectionHeader
@@ -21,7 +21,7 @@ export function BlogGrid() {
           </Link>
         </div>
 
-        <div className="mt-12 grid items-stretch gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (
             <FadeIn key={post.id} delay={index * 0.1} className="h-full">
               <Link href={`/insights/${post.slug}`} className="premium-card group flex h-full flex-col">

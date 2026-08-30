@@ -24,7 +24,7 @@ export function WhyAllianceSquare() {
           light
         />
 
-        <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {whyAllianceFeatures.map((feature, index) => (
             <FadeIn key={feature.number} delay={index * 0.08}>
               <article className="group h-full rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all duration-500 hover:border-brand-cyan/30 hover:bg-white/10 md:p-10">

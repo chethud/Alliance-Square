@@ -30,88 +30,197 @@ function CategoryBadge({ label, active }: { label: string; active: boolean }) {
   );
 }
 
+function StorySvg({ children }: { children: React.ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 140 48"
+      width={140}
+      height={48}
+      className="story-visual mt-10 h-12 w-[140px] shrink-0"
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  );
+}
+
 function StoryVisual({ driver, active }: { driver: GrowthDriver; active: boolean }) {
   const stroke = active ? "#00A9E8" : "#D8DEE2";
   const fill = active ? "rgba(0,169,232,0.12)" : "rgba(216,222,226,0.35)";
+  const accent = active ? "#00A9E8" : "#D8DEE2";
 
-  if (driver.id === "airport") {
-    return (
-      <svg viewBox="0 0 120 48" className="mt-10 h-12 w-[120px]" aria-hidden="true">
-        <line x1="8" y1="40" x2="112" y2="40" stroke={stroke} strokeWidth="1" />
-        <line x1="20" y1="40" x2="20" y2="28" stroke={stroke} strokeWidth="1" />
-        <line x1="100" y1="40" x2="100" y2="28" stroke={stroke} strokeWidth="1" />
-        <rect x="20" y="28" width="80" height="4" fill={fill} stroke={stroke} strokeWidth="1" />
-      </svg>
-    );
-  }
+  switch (driver.id) {
+    case "expressway":
+      return (
+        <StorySvg>
+          <line x1="8" y1="40" x2="132" y2="40" stroke={stroke} strokeWidth="1" />
+          <rect x="8" y="30" width="124" height="6" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="8" y="22" width="124" height="4" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="8" y="16" width="124" height="3" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <line x1="70" y1="8" x2="70" y2="16" stroke={accent} strokeWidth="1.5" />
+        </StorySvg>
+      );
 
-  if (driver.category === "Connectivity") {
-    return (
-      <svg viewBox="0 0 140 48" className="mt-10 h-12 w-[140px]" aria-hidden="true">
-        <path
-          d="M8 36 C40 36, 50 12, 72 12 S104 36, 132 20"
-          fill="none"
-          stroke={stroke}
-          strokeWidth="1.5"
-          strokeDasharray={active ? "none" : "4 4"}
-        />
-        <circle cx="8" cy="36" r="3" fill={active ? "#00A9E8" : "#D8DEE2"} />
-        <circle cx="132" cy="20" r="3" fill={active ? "#00A9E8" : "#D8DEE2"} />
-      </svg>
-    );
-  }
+    case "ring-road":
+      return (
+        <StorySvg>
+          <ellipse cx="70" cy="24" rx="52" ry="18" fill="none" stroke={stroke} strokeWidth="1.5" />
+          <ellipse cx="70" cy="24" rx="28" ry="10" fill="none" stroke={stroke} strokeWidth="1" strokeDasharray="3 3" />
+          <circle cx="70" cy="24" r="4" fill={accent} />
+        </StorySvg>
+      );
 
-  if (driver.category === "Infrastructure") {
-    return (
-      <svg viewBox="0 0 120 48" className="mt-10 h-12 w-[120px]" aria-hidden="true">
-        {[0, 1, 2, 3].map((row) =>
-          [0, 1, 2, 3].map((col) => (
-            <rect
-              key={`${row}-${col}`}
-              x={12 + col * 24}
-              y={8 + row * 10}
-              width="18"
-              height="6"
-              fill={fill}
+    case "highways":
+      return (
+        <StorySvg>
+          <path
+            d="M8 36 L52 36 L72 20 L92 28 L132 16"
+            fill="none"
+            stroke={stroke}
+            strokeWidth="1.5"
+          />
+          <path
+            d="M52 36 L72 36 L88 30 L132 30"
+            fill="none"
+            stroke={stroke}
+            strokeWidth="1"
+            strokeDasharray="4 3"
+          />
+          <circle cx="8" cy="36" r="3" fill={accent} />
+          <circle cx="132" cy="16" r="3" fill={accent} />
+        </StorySvg>
+      );
+
+    case "airport":
+      return (
+        <StorySvg>
+          <line x1="8" y1="40" x2="132" y2="40" stroke={stroke} strokeWidth="1" />
+          <line x1="24" y1="40" x2="24" y2="26" stroke={stroke} strokeWidth="1" />
+          <line x1="116" y1="40" x2="116" y2="26" stroke={stroke} strokeWidth="1" />
+          <rect x="24" y="26" width="92" height="5" fill={fill} stroke={stroke} strokeWidth="1" />
+          <path
+            d="M58 18 L78 18 L82 24 L74 24 L74 30 L62 30 L62 24 L54 24 Z"
+            fill={fill}
+            stroke={stroke}
+            strokeWidth="1"
+          />
+        </StorySvg>
+      );
+
+    case "cricket-stadium":
+      return (
+        <StorySvg>
+          <ellipse cx="70" cy="30" rx="46" ry="14" fill={fill} stroke={stroke} strokeWidth="1" />
+          <rect x="34" y="12" width="72" height="10" rx="2" fill={fill} stroke={stroke} strokeWidth="1" />
+          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+            <line
+              key={i}
+              x1={40 + i * 10}
+              y1="12"
+              x2={40 + i * 10}
+              y2="22"
               stroke={stroke}
-              strokeWidth="0.75"
+              strokeWidth="0.5"
             />
-          ))
-        )}
-      </svg>
-    );
-  }
+          ))}
+          <line x1="70" y1="30" x2="70" y2="22" stroke={accent} strokeWidth="1" />
+        </StorySvg>
+      );
 
-  if (driver.category === "Industry") {
-    return (
-      <svg viewBox="0 0 120 48" className="mt-10 h-12 w-[120px]" aria-hidden="true">
-        <rect x="16" y="28" width="20" height="16" fill={fill} stroke={stroke} strokeWidth="1" />
-        <rect x="42" y="20" width="20" height="24" fill={fill} stroke={stroke} strokeWidth="1" />
-        <rect x="68" y="12" width="20" height="32" fill={fill} stroke={stroke} strokeWidth="1" />
-        <rect x="94" y="24" width="16" height="20" fill={fill} stroke={stroke} strokeWidth="1" />
-      </svg>
-    );
-  }
+    case "greater-mysuru":
+      return (
+        <StorySvg>
+          <rect x="18" y="28" width="14" height="12" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="36" y="22" width="14" height="18" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="54" y="18" width="14" height="22" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="72" y="24" width="14" height="16" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="90" y="20" width="14" height="20" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <rect x="108" y="26" width="14" height="14" fill={fill} stroke={stroke} strokeWidth="0.75" />
+          <path
+            d="M12 40 H128"
+            fill="none"
+            stroke={stroke}
+            strokeWidth="1"
+          />
+          <path
+            d="M8 40 C40 34, 100 34, 132 40"
+            fill="none"
+            stroke={accent}
+            strokeWidth="1"
+            strokeDasharray="4 3"
+          />
+        </StorySvg>
+      );
 
-  if (driver.category === "Education") {
-    return (
-      <svg viewBox="0 0 120 48" className="mt-10 h-12 w-[120px]" aria-hidden="true">
-        <rect x="20" y="14" width="80" height="28" fill="none" stroke={stroke} strokeWidth="1" />
-        <line x1="20" y1="26" x2="100" y2="26" stroke={stroke} strokeWidth="1" />
-        <line x1="44" y1="14" x2="44" y2="42" stroke={stroke} strokeWidth="1" />
-        <line x1="68" y1="14" x2="68" y2="42" stroke={stroke} strokeWidth="1" />
-      </svg>
-    );
-  }
+    case "it-sector":
+      return (
+        <StorySvg>
+          <rect x="24" y="12" width="92" height="28" rx="2" fill={fill} stroke={stroke} strokeWidth="1" />
+          <rect x="30" y="18" width="80" height="16" fill="none" stroke={stroke} strokeWidth="0.75" />
+          <rect x="36" y="24" width="18" height="4" fill={accent} opacity="0.8" />
+          <rect x="58" y="24" width="18" height="4" fill={fill} stroke={stroke} strokeWidth="0.5" />
+          <rect x="80" y="24" width="18" height="4" fill={fill} stroke={stroke} strokeWidth="0.5" />
+          <line x1="70" y1="8" x2="70" y2="12" stroke={stroke} strokeWidth="1" />
+          <circle cx="70" cy="6" r="2" fill={accent} />
+        </StorySvg>
+      );
 
-  return (
-    <svg viewBox="0 0 120 48" className="mt-10 h-12 w-[120px]" aria-hidden="true">
-      <line x1="60" y1="8" x2="60" y2="40" stroke={stroke} strokeWidth="1" />
-      <line x1="36" y1="24" x2="84" y2="24" stroke={stroke} strokeWidth="1" />
-      <line x1="44" y1="16" x2="76" y2="32" stroke={stroke} strokeWidth="1" />
-      <line x1="44" y1="32" x2="76" y2="16" stroke={stroke} strokeWidth="1" />
-    </svg>
-  );
+    case "logistics":
+      return (
+        <StorySvg>
+          <rect x="16" y="18" width="36" height="22" fill={fill} stroke={stroke} strokeWidth="1" />
+          <rect x="52" y="24" width="44" height="16" fill={fill} stroke={stroke} strokeWidth="1" />
+          <rect x="96" y="20" width="28" height="20" fill={fill} stroke={stroke} strokeWidth="1" />
+          <circle cx="34" cy="40" r="4" fill="none" stroke={stroke} strokeWidth="1" />
+          <circle cx="74" cy="40" r="4" fill="none" stroke={stroke} strokeWidth="1" />
+          <circle cx="110" cy="40" r="4" fill="none" stroke={stroke} strokeWidth="1" />
+          <line x1="8" y1="40" x2="132" y2="40" stroke={stroke} strokeWidth="1" />
+        </StorySvg>
+      );
+
+    case "tourism":
+      return (
+        <StorySvg>
+          <path
+            d="M20 38 L70 10 L120 38 Z"
+            fill={fill}
+            stroke={stroke}
+            strokeWidth="1"
+            strokeLinejoin="round"
+          />
+          <rect x="58" y="24" width="24" height="14" fill="none" stroke={stroke} strokeWidth="1" />
+          <line x1="70" y1="24" x2="70" y2="38" stroke={stroke} strokeWidth="1" />
+          <line x1="58" y1="31" x2="82" y2="31" stroke={stroke} strokeWidth="1" />
+          <circle cx="104" cy="16" r="6" fill={fill} stroke={stroke} strokeWidth="1" />
+          <path d="M104 10 V6 M100 14 H108" stroke={accent} strokeWidth="1" />
+        </StorySvg>
+      );
+
+    case "education":
+      return (
+        <StorySvg>
+          <path
+            d="M12 22 L70 8 L128 22 L70 36 Z"
+            fill={fill}
+            stroke={stroke}
+            strokeWidth="1"
+            strokeLinejoin="round"
+          />
+          <line x1="70" y1="36" x2="70" y2="42" stroke={stroke} strokeWidth="1" />
+          <circle cx="70" cy="44" r="2" fill={accent} />
+          <line x1="40" y1="26" x2="40" y2="34" stroke={stroke} strokeWidth="1" />
+          <line x1="100" y1="26" x2="100" y2="34" stroke={stroke} strokeWidth="1" />
+        </StorySvg>
+      );
+
+    default:
+      return (
+        <StorySvg>
+          <line x1="70" y1="8" x2="70" y2="40" stroke={stroke} strokeWidth="1" />
+          <line x1="36" y1="24" x2="104" y2="24" stroke={stroke} strokeWidth="1" />
+        </StorySvg>
+      );
+  }
 }
 
 function GrowthNavItem({
@@ -348,7 +457,7 @@ export function WhyMysuru() {
   return (
     <section
       id="why-mysuru"
-      className="relative bg-[#F7F9FA] pt-16 pb-8 md:pt-20 md:pb-10 lg:pt-24 lg:pb-8"
+      className="relative bg-[#F7F9FA] section-pad"
       aria-labelledby="why-mysuru-heading"
     >
       {/* Background architecture */}
@@ -398,7 +507,7 @@ export function WhyMysuru() {
         />
 
         {/* Main layout — left nav sticky, right stories scroll with page */}
-        <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-12 lg:gap-x-10 xl:gap-x-12">
+        <div className="mt-10 grid gap-8 lg:mt-12 lg:grid-cols-12 lg:gap-x-8 xl:gap-x-10">
           {/* Left — stays fixed while stories scroll */}
           <aside className="hidden lg:sticky lg:top-[120px] lg:z-10 lg:col-span-4 lg:block lg:max-h-[calc(100vh-120px)] lg:self-start lg:overflow-y-auto">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7B858C]">

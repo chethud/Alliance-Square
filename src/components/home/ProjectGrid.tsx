@@ -25,7 +25,11 @@ export function ProjectGrid({ showHeader = true }: { showHeader?: boolean }) {
     activeFilter === "all" ? projects : projects.filter((p) => p.filters.includes(activeFilter));
 
   return (
-    <section id="projects" className="section-spacing bg-off-white" aria-labelledby="projects-heading">
+    <section
+      id="projects"
+      className="section-spacing bg-off-white"
+      aria-labelledby="projects-heading"
+    >
       <div className="container-main">
         {showHeader && (
           <SectionHeader
@@ -37,7 +41,7 @@ export function ProjectGrid({ showHeader = true }: { showHeader?: boolean }) {
         )}
 
         <div
-          className={cn("flex flex-wrap gap-2", showHeader ? "mt-12" : "mt-0")}
+          className={cn("flex flex-wrap gap-2", showHeader ? "mt-8" : "mt-0")}
           role="tablist"
           aria-label="Filter projects"
         >
@@ -74,7 +78,7 @@ export function ProjectGrid({ showHeader = true }: { showHeader?: boolean }) {
         <motion.div
           layout
           transition={reduceMotion ? { duration: 0 } : { layout: layoutSpring }}
-          className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {filtered.map((project, index) => (

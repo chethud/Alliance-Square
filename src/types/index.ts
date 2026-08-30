@@ -44,6 +44,9 @@ export interface Testimonial {
   location: string;
   quote: string;
   image?: string;
+  designation?: string;
+  verified?: boolean;
+  service?: string;
 }
 
 export interface BlogPost {

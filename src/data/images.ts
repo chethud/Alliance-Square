@@ -1,6 +1,7 @@
 /** Local images extracted from alliancesquare.com page exports */
 
 export const brandLogo = "/images/logo/alliance-square.png";
+export const brandLogoLight = "/images/logos/alliance-logo.png";
 
 export function projectImage(slug: string): string {
   return `/images/projects/${slug}.jpg`;

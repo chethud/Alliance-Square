@@ -52,7 +52,7 @@ function AnimatedStatValue({
   }, [play, target, suffix, format, reduceMotion]);
 
   return (
-    <p className="text-4xl font-extrabold tabular-nums text-white sm:text-5xl md:text-6xl lg:text-7xl">
+    <p className="text-4xl font-extrabold leading-none tabular-nums text-white sm:text-5xl md:text-6xl lg:text-7xl">
       {display}
     </p>
   );
@@ -85,16 +85,16 @@ export function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-premium-dark py-20 md:py-24"
+      className="section-pad relative overflow-hidden bg-premium-dark"
       aria-label="Company statistics"
     >
       <div className="absolute inset-0 bg-mesh-dark opacity-60" aria-hidden="true" />
-      <div className="container-main relative">
-        <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4">
+      <div className="container-main relative py-8 md:py-10 lg:py-12">
+        <div className="grid grid-cols-2 items-center gap-x-4 gap-y-10 md:grid-cols-4 md:gap-y-0">
           {statItems.map((item, index) => (
             <div
               key={item.label}
-              className={`flex flex-col items-center px-4 text-center md:px-6 ${
+              className={`flex min-h-[128px] flex-col items-center justify-center px-4 text-center md:min-h-[160px] md:px-6 ${
                 index > 0 ? "md:border-l md:border-white/10" : ""
               }`}
             >
@@ -104,7 +104,7 @@ export function StatsSection() {
                 format={item.format}
                 play={visible}
               />
-              <p className="mt-3 max-w-[180px] text-sm leading-snug text-white/55 md:text-base">
+              <p className="mt-3 flex min-h-[2.75rem] max-w-[180px] items-center justify-center text-sm leading-snug text-white/55 md:min-h-[3rem] md:text-base">
                 {item.label}
               </p>
             </div>

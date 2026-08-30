@@ -1,42 +1,217 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { testimonials } from "@/data/testimonials";
+import type { Testimonial } from "@/types";
+import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const TOTAL = testimonials.length;
 
-export function TestimonialCarousel() {
+function TestimonialImagePanel({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <div className="relative h-full w-full min-h-0">
+      {testimonial.image && (
+        <Image
+          src={testimonial.image}
+          alt={`${testimonial.name}, Alliance Square customer`}
+          fill
+          className="object-cover object-[center_22%]"
+          sizes="(max-width: 1024px) 100vw, 40vw"
+          priority
+        />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/90 via-navy-deep/15 to-transparent" />
+
+      <div className="absolute inset-x-0 bottom-0 p-4 md:p-5 lg:p-6">
+        <div className="rounded-2xl border border-white/10 bg-navy-deep/85 p-3.5 backdrop-blur-sm md:p-4">
+          {testimonial.verified !== false && (
+            <div className="flex items-center gap-2">
+              <BadgeCheck className="h-4 w-4 shrink-0 text-warm-gold" aria-hidden="true" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/90">
+                Verified Customer
+              </span>
+            </div>
+          )}
+
+          <p className="mt-3 text-lg font-semibold text-white md:text-xl">{testimonial.name}</p>
+
+          {testimonial.designation && (
+            <p className="mt-1 text-sm text-white/70">{testimonial.designation}</p>
+          )}
+
+          <p className="mt-4 border-t border-white/10 pt-4 text-xs font-medium tracking-wide text-white/75">
+            4,000+ Happy Customers
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TestimonialContentPanel({
+  testimonial,
+  current,
+  onPrev,
+  onNext,
+  onSelect,
+  reduceMotion,
+}: {
+  testimonial: Testimonial;
+  current: number;
+  onPrev: () => void;
+  onNext: () => void;
+  onSelect: (index: number) => void;
+  reduceMotion: boolean | null;
+}) {
+  return (
+    <div className="flex h-full min-h-0 flex-col px-6 py-7 sm:px-8 sm:py-8 lg:px-10 lg:py-10 xl:px-12 xl:py-11">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={testimonial.id}
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+          transition={{ duration: 0.4, ease: EASE }}
+          className="flex min-h-0 flex-1 flex-col"
+          aria-live="polite"
+        >
+          <span
+            className="text-[3.5rem] font-light leading-none text-warm-gold/75 md:text-[4rem] lg:text-[4.25rem]"
+            aria-hidden="true"
+          >
+            &ldquo;
+          </span>
+
+          <blockquote className="mt-4 max-w-2xl lg:mt-5">
+            <p className="text-lg font-normal leading-[1.6] text-testimonial-text md:text-xl md:leading-[1.55] lg:text-[1.35rem] lg:leading-[1.62]">
+              {testimonial.quote}
+            </p>
+          </blockquote>
+
+          <div className="my-6 h-px w-full bg-testimonial-border lg:my-7" />
+
+          <footer className="flex items-center gap-4">
+            {testimonial.image && (
+              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-1 ring-testimonial-border">
+                <Image
+                  src={testimonial.image}
+                  alt=""
+                  fill
+                  className="object-cover object-[center_22%]"
+                  sizes="44px"
+                  aria-hidden="true"
+                />
+              </div>
+            )}
+            <cite className="not-italic">
+              <span className="block text-base font-semibold text-testimonial-text md:text-lg">
+                {testimonial.name}
+              </span>
+              <span className="mt-1 flex items-center gap-1.5 text-sm text-cool-gray">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-navy-secondary" aria-hidden="true" />
+                {testimonial.location}
+              </span>
+            </cite>
+          </footer>
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="mt-6 flex flex-col gap-4 border-t border-testimonial-border pt-6 sm:flex-row sm:items-center sm:justify-between lg:mt-7">
+        <div
+          className="flex items-center gap-2"
+          role="tablist"
+          aria-label="Testimonial slides"
+        >
+          {testimonials.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={index === current}
+              aria-label={`Go to testimonial ${index + 1} of ${TOTAL}`}
+              onClick={() => onSelect(index)}
+              className={cn(
+                "h-2.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-secondary focus-visible:ring-offset-2",
+                index === current
+                  ? "w-7 bg-warm-gold"
+                  : "w-2.5 bg-light-gray hover:bg-cool-gray/50"
+              )}
+            />
+          ))}
+        </div>
+
+        <div className="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={onPrev}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-testimonial-border bg-white text-testimonial-text transition-all duration-300 hover:border-navy-secondary hover:text-navy-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-secondary focus-visible:ring-offset-2 md:h-12 md:w-12"
+            aria-label="Previous testimonial"
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <span
+            className="min-w-[4.5rem] text-center text-sm tabular-nums text-cool-gray"
+            aria-live="polite"
+          >
+            {String(current + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
+          </span>
+          <button
+            type="button"
+            onClick={onNext}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-testimonial-border bg-white text-testimonial-text transition-all duration-300 hover:border-navy-secondary hover:text-navy-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-secondary focus-visible:ring-offset-2 md:h-12 md:w-12"
+            aria-label="Next testimonial"
+          >
+            <ChevronRight className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TestimonialCarousel({ className }: { className?: string } = {}) {
   const [current, setCurrent] = useState(0);
   const reduceMotion = useReducedMotion();
   const testimonial = testimonials[current];
-  const progress = ((current + 1) / TOTAL) * 100;
 
-  const prev = () => setCurrent((c) => (c === 0 ? TOTAL - 1 : c - 1));
-  const next = () => setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1));
+  const prev = useCallback(
+    () => setCurrent((c) => (c === 0 ? TOTAL - 1 : c - 1)),
+    []
+  );
+  const next = useCallback(
+    () => setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1)),
+    []
+  );
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        prev();
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        next();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [next, prev]);
 
   return (
     <section
       id="testimonials"
-      className="relative overflow-hidden bg-off-white pt-20 pb-8 md:pt-28 md:pb-10 lg:pt-32 lg:pb-8"
+      className={cn("section-pad relative overflow-hidden bg-testimonial-bg", className)}
       aria-labelledby="testimonials-heading"
       aria-roledescription="carousel"
     >
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(90deg, rgba(32,33,36,0.03) 0, rgba(32,33,36,0.03) 1px, transparent 1px, transparent 80px)",
-          }}
-        />
-      </div>
-
       <div className="container-main relative">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeader
@@ -51,125 +226,36 @@ export function TestimonialCarousel() {
           </Link>
         </div>
 
-        <div className="mt-12 overflow-hidden rounded-2xl border border-light-gray/80 bg-white lg:mt-14">
+        <div className="relative mt-8 overflow-hidden rounded-[26px] border border-testimonial-border bg-white shadow-testimonial lg:mt-10">
           <div
-            className="h-0.5 bg-light-gray"
-            role="progressbar"
-            aria-valuenow={current + 1}
-            aria-valuemin={1}
-            aria-valuemax={TOTAL}
-            aria-label="Testimonial progress"
-          >
-            <div
-              className="h-0.5 bg-brand-cyan transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
+            className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-warm-gold/40 to-transparent"
+            aria-hidden="true"
+          />
 
-          <div className="grid h-[640px] grid-rows-[240px_1fr] sm:grid-rows-[280px_1fr] lg:h-[520px] lg:grid-cols-[minmax(0,42%)_1fr] lg:grid-rows-1">
-            <div className="relative h-full w-full min-h-0">
+          <div className="grid lg:h-[440px] lg:grid-cols-[2fr_3fr] lg:items-stretch">
+            <div className="relative h-[300px] min-h-0 overflow-hidden sm:h-[340px] lg:h-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`photo-${testimonial.id}`}
-                  initial={reduceMotion ? false : { opacity: 0, scale: 1.03 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={reduceMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   exit={reduceMotion ? undefined : { opacity: 0 }}
-                  transition={{ duration: 0.45, ease: EASE }}
-                  className="absolute inset-0"
+                  transition={{ duration: 0.4, ease: EASE }}
+                  className="h-full"
                 >
-                  {testimonial.image && (
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 42vw"
-                      priority={current === 0}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark/50 via-dark/10 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-white/30" />
+                  <TestimonialImagePanel testimonial={testimonial} />
                 </motion.div>
               </AnimatePresence>
-
-              <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4 lg:bottom-6 lg:left-6 lg:right-6">
-                <span className="badge bg-white/95 text-brand-cyan shadow-subtle backdrop-blur-sm">
-                  Verified Customer
-                </span>
-                <span className="hidden rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-charcoal shadow-subtle backdrop-blur-sm sm:inline-block">
-                  4,000+ Happy Customers
-                </span>
-              </div>
             </div>
 
-            <div className="flex h-full min-h-0 flex-col">
-              <div className="relative min-h-0 flex-1">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`quote-${testimonial.id}`}
-                    initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
-                    transition={{ duration: 0.45, ease: EASE }}
-                    className="absolute inset-0 flex flex-col overflow-y-auto px-7 pt-7 pb-4 md:px-9 md:pt-9 lg:px-11 lg:pt-11"
-                  >
-                    <span
-                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-cyan/10"
-                      aria-hidden="true"
-                    >
-                      <Quote className="h-5 w-5 fill-brand-cyan/20 text-brand-cyan" />
-                    </span>
-
-                    <blockquote className="mt-6 min-h-0 flex-1">
-                      <p className="text-lg font-medium leading-[1.75] text-charcoal md:text-xl lg:text-[22px] lg:leading-[1.7]">
-                        &ldquo;{testimonial.quote}&rdquo;
-                      </p>
-                    </blockquote>
-
-                    <footer className="mt-8 flex shrink-0 items-center gap-4 border-t border-light-gray/80 pt-6">
-                      {testimonial.image && (
-                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-brand-cyan/25">
-                          <Image
-                            src={testimonial.image}
-                            alt=""
-                            fill
-                            className="object-cover"
-                            sizes="48px"
-                          />
-                        </div>
-                      )}
-                      <cite className="not-italic">
-                        <span className="block text-base font-bold text-charcoal md:text-lg">
-                          {testimonial.name}
-                        </span>
-                        <span className="mt-0.5 block text-sm text-cool-gray">{testimonial.location}</span>
-                      </cite>
-                    </footer>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <div className="flex shrink-0 items-center justify-end gap-3 border-t border-light-gray/80 px-7 py-6 md:px-9 lg:px-11">
-                <button
-                  type="button"
-                  onClick={prev}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-light-gray bg-white transition-all hover:border-brand-cyan hover:text-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan"
-                  aria-label="Previous testimonial"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <span className="min-w-[4.5rem] text-center font-mono text-sm tabular-nums text-cool-gray">
-                  {String(current + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
-                </span>
-                <button
-                  type="button"
-                  onClick={next}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-light-gray bg-white transition-all hover:border-brand-cyan hover:text-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan"
-                  aria-label="Next testimonial"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+            <TestimonialContentPanel
+              testimonial={testimonial}
+              current={current}
+              onPrev={prev}
+              onNext={next}
+              onSelect={setCurrent}
+              reduceMotion={reduceMotion}
+            />
           </div>
         </div>
       </div>

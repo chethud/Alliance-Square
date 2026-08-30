@@ -23,7 +23,7 @@ export default function TestimonialsPage() {
         imageAlt="Alliance Square customer testimonials"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Testimonials" }]}
       />
-      <TestimonialCarousel />
+      <TestimonialCarousel className="pt-0" />
       <SiteVisitCTA />
     </>
   );
