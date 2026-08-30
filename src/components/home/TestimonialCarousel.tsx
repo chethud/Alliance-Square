@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { BadgeCheck, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { testimonials } from "@/data/testimonials";
 import type { Testimonial } from "@/types";
@@ -92,33 +92,10 @@ function TestimonialContentPanel({
             <p className="text-lg font-normal leading-[1.6] text-testimonial-text md:text-xl md:leading-[1.55] lg:text-[1.35rem] lg:leading-[1.62]">
               {testimonial.quote}
             </p>
+            <footer className="sr-only">
+              <cite>{testimonial.name}, {testimonial.location}</cite>
+            </footer>
           </blockquote>
-
-          <div className="my-6 h-px w-full bg-testimonial-border lg:my-7" />
-
-          <footer className="flex items-center gap-4">
-            {testimonial.image && (
-              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-1 ring-testimonial-border">
-                <Image
-                  src={testimonial.image}
-                  alt=""
-                  fill
-                  className="object-cover object-[center_22%]"
-                  sizes="44px"
-                  aria-hidden="true"
-                />
-              </div>
-            )}
-            <cite className="not-italic">
-              <span className="block text-base font-semibold text-testimonial-text md:text-lg">
-                {testimonial.name}
-              </span>
-              <span className="mt-1 flex items-center gap-1.5 text-sm text-cool-gray">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-navy-secondary" aria-hidden="true" />
-                {testimonial.location}
-              </span>
-            </cite>
-          </footer>
         </motion.div>
       </AnimatePresence>
 

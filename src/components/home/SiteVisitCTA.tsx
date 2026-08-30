@@ -7,26 +7,28 @@ import { projectImage } from "@/data/images";
 export function SiteVisitCTA() {
   return (
     <section className="relative overflow-hidden" aria-labelledby="site-visit-heading">
-      <div className="relative min-h-[520px]">
+      <div className="relative min-h-[520px] lg:min-h-[560px]">
         <Image
           src={projectImage("jeevan-vihar-phase-2")}
           alt="Jeevan Vihar Phase 2 — Alliance Square layout in Mysuru"
           fill
-          className="object-cover"
+          priority
+          quality={90}
+          className="hero-image-clarity object-cover object-[center_42%]"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-dark/90 via-dark/70 to-dark/40" />
-        <div className="absolute inset-0 bg-mesh-dark opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-dark/88 via-dark/52 to-dark/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark/35 via-transparent to-transparent" />
       </div>
 
       <div className="container-main absolute inset-0 flex items-center">
         <FadeIn>
-          <div className="max-w-xl">
+          <div className="max-w-xl rounded-2xl border border-white/10 bg-dark/15 p-6 backdrop-blur-[3px] md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
             <p className="label-accent text-brand-cyan">Site Visit</p>
             <h2 id="site-visit-heading" className="heading-section-light mt-4">
               See It Before You Decide.
             </h2>
-            <p className="mt-4 text-lg text-white/75">
+            <p className="mt-4 text-lg leading-relaxed text-white/85">
               Visit the property, explore the surroundings and speak with our experts.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">

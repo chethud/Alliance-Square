@@ -53,6 +53,20 @@ export const projectLogos = {
   "sridevi-lake-view": "/images/logos/sridevi-lake-view.jpg",
 } as const;
 
+/** Topic imagery for Why Mysuru growth stories — local assets, not project plot photos */
+export const growthStoryImages = {
+  expressway: "/images/growth/expressway.jpg",
+  "ring-road": "/images/growth/ring-road.jpg",
+  highways: "/images/growth/highways.jpg",
+  airport: "/images/growth/airport.jpg",
+  "cricket-stadium": "/images/growth/cricket-stadium.jpg",
+  "greater-mysuru": blogImages["greater-mysuru"],
+  "it-sector": "/images/growth/it-sector.jpg",
+  logistics: "/images/growth/logistics.jpg",
+  tourism: blogImages["hospitality-hub"],
+  education: blogImages["rv-university"],
+} as const;
+
 export const whyInvestIcons = [
   "/images/icons/inv1.png",
   "/images/icons/inv2.png",
