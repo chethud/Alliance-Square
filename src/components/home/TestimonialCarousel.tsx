@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { stats } from "@/data/company";
 import { testimonials } from "@/data/testimonials";
 import type { Testimonial } from "@/types";
 import { cn } from "@/lib/utils";
@@ -46,7 +47,7 @@ function TestimonialImagePanel({ testimonial }: { testimonial: Testimonial }) {
           )}
 
           <p className="mt-4 border-t border-white/10 pt-4 text-xs font-medium tracking-wide text-white/75">
-            4,000+ Happy Customers
+            {stats.customers.toLocaleString("en-IN")}+ Happy Customers
           </p>
         </div>
       </div>

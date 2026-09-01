@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FadeIn } from "@/components/ui/Motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { company } from "@/data/company";
+import { company, stats } from "@/data/company";
 
 export function BrandIntro() {
   return (
@@ -13,7 +13,7 @@ export function BrandIntro() {
               label="Who We Are"
               title={
                 <>
-                  25+ Years of Building
+                  {stats.years}+ Years of Building
                   <br />
                   Trust in Mysuru Real Estate.
                 </>

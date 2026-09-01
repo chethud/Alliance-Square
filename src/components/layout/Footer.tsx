@@ -31,7 +31,7 @@ function FooterContactItem({
   children: ReactNode;
 }) {
   return (
-    <p className="flex gap-3 text-sm leading-relaxed text-white/70">
+    <p className="flex gap-3 text-sm leading-relaxed text-cool-gray">
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-cyan" aria-hidden="true" />
       <span>{children}</span>
     </p>
@@ -40,18 +40,17 @@ function FooterContactItem({
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-dark text-white">
-      <div className="absolute inset-0 bg-mesh-dark opacity-40" />
+    <footer className="relative overflow-hidden border-t border-light-gray/80 bg-white text-charcoal">
       <div className="container-main relative pt-12 pb-8 md:pt-14">
         <div className="grid items-start gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-12">
           <div className="sm:col-span-2 lg:col-span-4">
-            <Logo variant="light" />
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/65 md:text-base">
+            <Logo />
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-cool-gray md:text-base">
               {company.tagline}
             </p>
             <Link
               href="/contact"
-              className="btn-outline-light mt-8 inline-flex text-sm"
+              className="btn-secondary mt-8 inline-flex text-sm"
             >
               Get in Touch
             </Link>
@@ -88,7 +87,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition-all duration-300 hover:border-brand-cyan hover:bg-brand-cyan/10 hover:text-brand-cyan"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-light-gray bg-white text-cool-gray transition-all duration-300 hover:border-brand-cyan hover:bg-brand-cyan/10 hover:text-brand-cyan"
                   >
                     <Icon className="h-4 w-4" aria-hidden="true" />
                   </a>
@@ -134,17 +133,17 @@ export function Footer() {
 
         <div className="divider-gradient mt-8 md:mt-10" />
         <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p className="text-sm text-white/45">
+          <p className="text-sm text-cool-gray">
             © {new Date().getFullYear()} Alliance Square Properties. All Rights Reserved.
           </p>
           <div className="flex flex-wrap gap-6">
-            <Link href="/privacy" className="text-sm text-white/45 transition-colors hover:text-brand-cyan">
+            <Link href="/privacy" className="text-sm text-cool-gray transition-colors hover:text-brand-cyan">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-white/45 transition-colors hover:text-brand-cyan">
+            <Link href="/terms" className="text-sm text-cool-gray transition-colors hover:text-brand-cyan">
               Terms
             </Link>
-            <Link href="/disclaimer" className="text-sm text-white/45 transition-colors hover:text-brand-cyan">
+            <Link href="/disclaimer" className="text-sm text-cool-gray transition-colors hover:text-brand-cyan">
               Disclaimer
             </Link>
           </div>

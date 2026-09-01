@@ -15,12 +15,14 @@ export const company = {
   mobile: ["8867324404", "9902926006"],
   email: "info@alliancesquare.com",
   whatsapp: "919902926006",
+  footerWelcome:
+    "is a pioneer in the real estate industry in Mysuru. It offers you the best investment opportunities & inspires you to live life to the fullest. Alliance Square Apartments, Layouts & Villas are meticulously designed with unbound convenience & the best of amenities and are an effortless blend of modernity and elegance.",
 };
 
 export const stats: CompanyStats = {
-  years: 25,
-  layouts: 50,
-  customers: 4000,
+  years: 20,
+  layouts: 15,
+  customers: 5000,
   customerFocused: "100%",
 };
 
@@ -53,19 +55,19 @@ export const contact: ContactInfo = {
 export const whyAllianceFeatures: WhyAllianceFeature[] = [
   {
     number: "01",
-    title: "25+ Years of Experience",
+    title: "20+ Years of Experience",
     description:
-      "A quarter-century of real estate sector excellence in Mysuru, building lasting relationships with investors and homebuyers.",
+      "Two decades of real estate sector excellence in Mysuru, building lasting relationships with investors and homebuyers.",
   },
   {
     number: "02",
-    title: "4,000+ Happy Customers",
+    title: "5,000+ Happy Customers",
     description:
       "Thousands of families have trusted Alliance Square for transparent, hassle-free property purchases and registrations.",
   },
   {
     number: "03",
-    title: "50+ Layouts",
+    title: "15+ Layouts",
     description:
       "A diverse portfolio of residential layouts across Mysuru and emerging growth corridors.",
   },

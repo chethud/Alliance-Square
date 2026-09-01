@@ -14,9 +14,9 @@ import {
 } from "@/data/about";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "About Alliance Square Properties | 25+ Years in Mysuru Real Estate",
+  title: "About Alliance Square Properties | 20+ Years in Mysuru Real Estate",
   description:
-    "Learn about Alliance Square Properties — a pioneer in Mysuru real estate with 25+ years of excellence, professional services, and thousands of happy customers.",
+    "Learn about Alliance Square Properties — a pioneer in Mysuru real estate with 20+ years of excellence, professional services, and thousands of happy customers.",
   path: "/about",
   image: aboutBanner,
 });

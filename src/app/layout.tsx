@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 import { Navbar } from "@/components/layout/Navbar";
+import { SafeWheelsBranding } from "@/components/layout/SafeWheelsBranding";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/layout/FloatingActions";
 import { OrganizationSchema } from "@/components/seo/StructuredData";
@@ -27,6 +28,7 @@ export default function RootLayout({
         <OrganizationSchema />
         <Navbar />
         <main>{children}</main>
+        <SafeWheelsBranding />
         <Footer />
         <FloatingActions />
       </body>
