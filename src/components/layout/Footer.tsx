@@ -48,12 +48,6 @@ export function Footer() {
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-cool-gray md:text-base">
               {company.tagline}
             </p>
-            <Link
-              href="/contact"
-              className="btn-secondary mt-8 inline-flex text-sm"
-            >
-              Get in Touch
-            </Link>
           </div>
 
           <div className="lg:col-span-4">
