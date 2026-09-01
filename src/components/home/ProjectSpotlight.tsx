@@ -1,16 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { getSpotlightProjects } from "@/data/projects";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
 
 const SPOTLIGHT_PROJECTS = getSpotlightProjects();
 const TOTAL = SPOTLIGHT_PROJECTS.length;
-const ROTATE_MS = 3500;
+const ROTATE_MS = 3000;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 function SpotlightContent({ project }: { project: Project }) {
@@ -69,9 +69,12 @@ function SpotlightDots({
 }
 
 export function ProjectSpotlight() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [timerReset, setTimerReset] = useState(0);
   const reduceMotion = useReducedMotion();
+  const isInView = useInView(sectionRef, { amount: 0.35 });
   const project = SPOTLIGHT_PROJECTS[current];
 
   const next = useCallback(() => {
@@ -80,24 +83,24 @@ export function ProjectSpotlight() {
 
   const goTo = useCallback((index: number) => {
     setCurrent(index);
+    setTimerReset((value) => value + 1);
   }, []);
 
   useEffect(() => {
-    if (reduceMotion || isPaused || TOTAL <= 1) return;
+    if (reduceMotion || isHovered || !isInView || TOTAL <= 1) return;
 
     const timer = window.setInterval(next, ROTATE_MS);
     return () => window.clearInterval(timer);
-  }, [isPaused, next, reduceMotion]);
+  }, [isHovered, isInView, next, reduceMotion, timerReset]);
 
   return (
     <section
+      ref={sectionRef}
       className="relative overflow-hidden"
       aria-labelledby="spotlight-heading"
       aria-roledescription="carousel"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={() => setIsPaused(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative min-h-[520px] lg:min-h-[600px]">
         <AnimatePresence mode="wait" initial={false}>

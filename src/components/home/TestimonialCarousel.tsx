@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stats } from "@/data/company";
@@ -12,6 +11,7 @@ import type { Testimonial } from "@/types";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+const ROTATE_MS = 3000;
 const TOTAL = testimonials.length;
 
 function TestimonialImagePanel({ testimonial }: { testimonial: Testimonial }) {
@@ -154,18 +154,38 @@ function TestimonialContentPanel({
 }
 
 export function TestimonialCarousel({ className }: { className?: string } = {}) {
+  const sectionRef = useRef<HTMLElement>(null);
   const [current, setCurrent] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [timerReset, setTimerReset] = useState(0);
   const reduceMotion = useReducedMotion();
+  const isInView = useInView(sectionRef, { amount: 0.35 });
   const testimonial = testimonials[current];
 
-  const prev = useCallback(
-    () => setCurrent((c) => (c === 0 ? TOTAL - 1 : c - 1)),
-    []
-  );
-  const next = useCallback(
-    () => setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1)),
-    []
-  );
+  const prev = useCallback(() => {
+    setCurrent((c) => (c === 0 ? TOTAL - 1 : c - 1));
+    setTimerReset((value) => value + 1);
+  }, []);
+
+  const next = useCallback(() => {
+    setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1));
+    setTimerReset((value) => value + 1);
+  }, []);
+
+  const goTo = useCallback((index: number) => {
+    setCurrent(index);
+    setTimerReset((value) => value + 1);
+  }, []);
+
+  useEffect(() => {
+    if (reduceMotion || isHovered || !isInView || TOTAL <= 1) return;
+
+    const timer = window.setInterval(() => {
+      setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1));
+    }, ROTATE_MS);
+
+    return () => window.clearInterval(timer);
+  }, [isHovered, isInView, reduceMotion, timerReset]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -185,24 +205,21 @@ export function TestimonialCarousel({ className }: { className?: string } = {}) 
 
   return (
     <section
+      ref={sectionRef}
       id="testimonials"
       className={cn("section-pad relative overflow-hidden bg-testimonial-bg", className)}
       aria-labelledby="testimonials-heading"
       aria-roledescription="carousel"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="container-main relative">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeader
-            headingId="testimonials-heading"
-            label="Testimonials"
-            title="What Our Customers Say"
-            description="Real stories from homebuyers and investors who chose Alliance Square."
-          />
-          <Link href="/testimonials" className="link-arrow shrink-0">
-            View All Testimonials
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+        <SectionHeader
+          headingId="testimonials-heading"
+          label="Testimonials"
+          title="What Our Customers Say"
+          description="Real stories from homebuyers and investors who chose Alliance Square."
+        />
 
         <div className="relative mt-8 overflow-hidden rounded-[26px] border border-testimonial-border bg-white shadow-testimonial lg:mt-10">
           <div
@@ -231,7 +248,7 @@ export function TestimonialCarousel({ className }: { className?: string } = {}) 
               current={current}
               onPrev={prev}
               onNext={next}
-              onSelect={setCurrent}
+              onSelect={goTo}
               reduceMotion={reduceMotion}
             />
           </div>

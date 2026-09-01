@@ -7,7 +7,6 @@ import { WhyMysuru } from "@/components/home/WhyMysuru";
 import { MysuruMap } from "@/components/home/MysuruMap";
 import { WhyAllianceSquare } from "@/components/home/WhyAllianceSquare";
 import { ApprovalSection } from "@/components/home/ApprovalSection";
-import { SiteVisitCTA } from "@/components/home/SiteVisitCTA";
 import { TestimonialCarousel } from "@/components/home/TestimonialCarousel";
 import { BlogGrid } from "@/components/home/BlogGrid";
 import { LeadForm } from "@/components/forms/LeadForm";
@@ -26,7 +25,6 @@ export default function HomePage() {
       <MysuruMap />
       <WhyAllianceSquare />
       <ApprovalSection />
-      <SiteVisitCTA />
       <TestimonialCarousel />
       <BlogGrid />
       <LeadForm />
