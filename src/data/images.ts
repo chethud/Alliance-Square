@@ -48,7 +48,7 @@ export const layoutsBanner = "/images/layouts-banner.jpg";
 
 export const projectLogos = {
   "uk-square": "/images/logos/uk-square.png",
-  "cnm-apex-city": "/images/logos/cnm-apex-city.png",
+  "cnm-apex-city": "/images/projects/cnm-apex-city.jpg",
   "jeevan-vihar-phase-2": "/images/logos/jeevan-vihar-phase-2.png",
   "sridevi-lake-view": "/images/logos/sridevi-lake-view.jpg",
 } as const;
