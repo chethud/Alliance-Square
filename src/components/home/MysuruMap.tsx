@@ -118,7 +118,7 @@ export function MysuruMap() {
             </div>
 
             <div className="pointer-events-none absolute inset-0 z-10">
-              <div className="pointer-events-auto absolute left-4 top-4 w-[calc(100%-2rem)] max-w-[300px] rounded-2xl border border-light-gray/80 bg-white/95 p-4 shadow-premium backdrop-blur-sm">
+              <div className="pointer-events-auto absolute bottom-4 left-4 w-[calc(100%-2rem)] max-w-[300px] rounded-2xl border border-light-gray/80 bg-white/95 p-4 shadow-premium backdrop-blur-sm">
                 <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-cool-gray">
                   <span className="flex items-center gap-2">
                     <span className="inline-block h-3 w-3 rounded-full bg-brand-cyan shadow-glow" />

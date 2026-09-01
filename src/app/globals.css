@@ -302,21 +302,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
   background: #ffffff;
   border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  font-size: 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1;
   font-weight: 700;
   color: #6B7280;
   box-shadow: 0 2px 6px rgba(17, 19, 21, 0.1);
+  overflow: hidden;
 }
 
 .asp-landmark-marker-dot .asp-landmark-icon {
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   display: block;
+  flex-shrink: 0;
 }
 
 .leaflet-popup-content-wrapper {

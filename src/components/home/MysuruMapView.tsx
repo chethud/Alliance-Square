@@ -50,9 +50,9 @@ function createLandmarkIcon(type: "airport" | "city" | "highway" | "railway") {
   return L.divIcon({
     className: "asp-landmark-marker",
     html: `<div class="asp-landmark-marker-dot" data-type="${type}">${label}</div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12],
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, -10],
   });
 }
 
