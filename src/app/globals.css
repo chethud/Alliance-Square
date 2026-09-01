@@ -152,6 +152,21 @@
   .hero-image-clarity {
     filter: brightness(1.06) contrast(1.1) saturate(1.08);
   }
+
+  .hero-video-shell {
+    transform: scale(1.55);
+    transform-origin: center center;
+  }
+
+  .hero-video-player,
+  .hero-video-player iframe {
+    pointer-events: none !important;
+  }
+
+  .hero-video-blocker {
+    pointer-events: auto;
+    touch-action: none;
+  }
 }
 
 @layer utilities {

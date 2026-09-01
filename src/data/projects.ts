@@ -10,9 +10,9 @@ export const projects: Project[] = [
     description:
       "UK Square is a premium gated plotted community located right on the Mysuru–Kushalnagar Highway Entry/Exit Junction at Yelawala, off Hunsur Road, Mysuru. Designed for modern families and smart investors, the project offers excellent connectivity, peaceful surroundings, and strong future appreciation in one of Mysuru's fastest-growing corridors.",
     location: {
-      area: "Yelawala, Hunsur Road",
+      area: "Yalachahalli, Hobli, Yelawala, Karnataka 571130",
       city: "Mysuru",
-      coordinates: { lat: 12.365, lng: 76.555 },
+      coordinates: { lat: 12.3858889, lng: 76.522086 },
     },
     pricePerSqft: 3300,
     priceLabel: "₹3,300 / Sq.ft onwards",
@@ -58,9 +58,9 @@ export const projects: Project[] = [
     description:
       "CNM Apex City is a premium residential layout strategically located on Srirampura Ring Road, offering the perfect mix of connectivity, convenience, and future growth in Mysuru. Designed with modern infrastructure and a focus on comfortable living, it is an ideal choice for both homebuyers and smart investors.",
     location: {
-      area: "Srirampura Ring Road",
+      area: "7J2G+JFG, Ring Rd, Srirampura, Sriramapura, Karnataka 570008",
       city: "Mysuru",
-      coordinates: { lat: 12.275, lng: 76.635 },
+      coordinates: { lat: 12.2515591, lng: 76.6262138 },
     },
     pricePerSqft: 5499,
     priceLabel: "₹5,499 / Sq.ft onwards",
@@ -109,9 +109,9 @@ export const projects: Project[] = [
     description:
       "Sridevi Lake View offers residential plots in a serene setting with natural surroundings, ideal for those seeking peaceful living with strong investment potential in Mysuru.",
     location: {
-      area: "Mysuru",
+      area: "Off T Narasipura Road, near Blue Ocean Convention Hall",
       city: "Mysuru",
-      coordinates: { lat: 12.295, lng: 76.645 },
+      coordinates: { lat: 12.2634911, lng: 76.7679361 },
     },
     pricePerSqft: 2400,
     priceLabel: "₹2,400 / Sq.ft onwards",
@@ -150,9 +150,9 @@ export const projects: Project[] = [
     description:
       "Jeevan Vihar Phase 2 extends the trusted Jeevan Vihar legacy with premium residential plots, modern infrastructure, and a customer-focused buying experience.",
     location: {
-      area: "Mysuru",
+      area: "Bannur–Kanakapura Highway, Harohalli",
       city: "Mysuru",
-      coordinates: { lat: 12.305, lng: 76.625 },
+      coordinates: { lat: 12.3182661, lng: 76.7757179 },
     },
     pricePerSqft: 6499,
     priceLabel: "₹6,499 / Sq.ft onwards",
@@ -192,9 +192,9 @@ export const projects: Project[] = [
     description:
       "Alliance Serene Phase 2 offers thoughtfully planned residential plots in a well-developed layout with modern amenities and excellent connectivity in Mysuru.",
     location: {
-      area: "Mysuru",
+      area: "Vajamangala, Bannur Road",
       city: "Mysuru",
-      coordinates: { lat: 12.285, lng: 76.615 },
+      coordinates: { lat: 12.3074408, lng: 76.7458599 },
     },
     pricePerSqft: 3500,
     priceLabel: "₹3,500 / Sq.ft onwards",
@@ -235,7 +235,7 @@ export const projects: Project[] = [
     location: {
       area: "Chamalapura Main Road, Nanjangud",
       city: "Mysuru Region",
-      coordinates: { lat: 12.118, lng: 76.685 },
+      coordinates: { lat: 12.1301588, lng: 76.6754512 },
     },
     pricePerSqft: 3400,
     priceLabel: "₹3,400 / Sq.ft onwards",
@@ -285,9 +285,9 @@ export const projects: Project[] = [
     description:
       "Dr. Daya Nagar is a MUDA approved residential layout off Bogadi Road, Mysuru, offering legally sanctioned plots with planned infrastructure and excellent connectivity.",
     location: {
-      area: "Off Bogadi Road",
+      area: "Off Bogadi Road, Gaddige Road",
       city: "Mysuru",
-      coordinates: { lat: 12.31, lng: 76.64 },
+      coordinates: { lat: 12.304697, lng: 76.5666079 },
     },
     pricePerSqft: 3500,
     priceLabel: "₹3,500 / Sq.ft onwards",
@@ -328,7 +328,7 @@ export const projects: Project[] = [
     location: {
       area: "Mysuru",
       city: "Mysuru",
-      coordinates: { lat: 12.3, lng: 76.63 },
+      coordinates: { lat: 12.3266725, lng: 76.53125 },
     },
     pricePerSqft: 2500,
     priceLabel: "₹2,500 / Sq.ft onwards",
@@ -369,7 +369,7 @@ export const projects: Project[] = [
     location: {
       area: "Hunsur Road (behind RMP)",
       city: "Mysuru",
-      coordinates: { lat: 12.34, lng: 76.58 },
+      coordinates: { lat: 12.3592778, lng: 76.5029224 },
     },
     pricePerSqft: 1600,
     priceLabel: "₹1,600 / Sq.ft onwards",
@@ -454,6 +454,28 @@ export const layoutsPageOrder = [
   "jeevan-vihar",
   "dhatri-square",
 ] as const;
+
+/** First 4 on layouts page — currently running on the map sidebar */
+export const runningMapMarkerOrder = layoutsPageOrder.slice(0, 4);
+
+/** Remaining projects — completed on the map sidebar */
+export const completedMapMarkerOrder = layoutsPageOrder.slice(4);
+
+export function getGroupedMapMarkers(): {
+  running: MapMarker[];
+  completed: MapMarker[];
+} {
+  const bySlug = new Map(mapMarkers.map((m) => [m.projectSlug, m]));
+
+  return {
+    running: runningMapMarkerOrder
+      .map((slug) => bySlug.get(slug))
+      .filter((m): m is MapMarker => Boolean(m)),
+    completed: completedMapMarkerOrder
+      .map((slug) => bySlug.get(slug))
+      .filter((m): m is MapMarker => Boolean(m)),
+  };
+}
 
 /** Sidebar featured order from original layouts page */
 export const featuredSidebarOrder = [
