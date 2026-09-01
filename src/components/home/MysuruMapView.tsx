@@ -16,6 +16,7 @@ import {
 import type { MapMarker } from "@/types";
 import {
   MYSURU_CENTER,
+  MYSURU_MAP_MAX_RADIUS_M,
   MYSURU_ZOOM,
   mapCorridors,
   mapLandmarks,
@@ -54,6 +55,21 @@ function createLandmarkIcon(type: "airport" | "city" | "highway" | "railway") {
     iconAnchor: [10, 10],
     popupAnchor: [0, -10],
   });
+}
+
+function MapBoundsLimit() {
+  const map = useMap();
+
+  useEffect(() => {
+    const maxBounds = L.latLng(MYSURU_CENTER).toBounds(MYSURU_MAP_MAX_RADIUS_M);
+    map.setMaxBounds(maxBounds);
+    map.options.maxBoundsViscosity = 1;
+
+    const minZoom = map.getBoundsZoom(maxBounds, false);
+    map.setMinZoom(minZoom);
+  }, [map]);
+
+  return null;
 }
 
 function MapResizeFix() {
@@ -136,7 +152,7 @@ export function MysuruMapView({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         subdomains={["a", "b", "c"]}
         maxZoom={19}
-        minZoom={9}
+        minZoom={10}
       />
 
       {mapCorridors.map((corridor) => (
@@ -194,6 +210,7 @@ export function MysuruMapView({
       ))}
 
       <ZoomControl position="bottomright" />
+      <MapBoundsLimit />
       <MapResizeFix />
       <EnableMapInteraction />
       <FitAllMarkers markers={markers} />

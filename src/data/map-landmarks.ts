@@ -15,6 +15,8 @@ export interface MapCorridor {
 /** Mysuru map center and default zoom */
 export const MYSURU_CENTER: [number, number] = [12.285, 76.62];
 export const MYSURU_ZOOM = 11;
+/** Max pan distance from Mysuru center (meters) */
+export const MYSURU_MAP_MAX_RADIUS_M = 100_000;
 
 export const mapLandmarks: MapLandmark[] = [
   {
