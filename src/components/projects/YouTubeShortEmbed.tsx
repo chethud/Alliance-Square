@@ -61,6 +61,7 @@ export function YouTubeShortEmbed({
   const shellRef = useRef<HTMLDivElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
+  const isInViewRef = useRef(true);
   const userPrefersMutedRef = useRef(false);
   const mutedFallbackAppliedRef = useRef(false);
   const isPlayingRef = useRef(false);
@@ -94,6 +95,17 @@ export function YouTubeShortEmbed({
     [syncMuteState]
   );
 
+  const resumeShortPlayback = useCallback(
+    (player: YTPlayer) => {
+      player.playVideo();
+      if (!userPrefersMutedRef.current) {
+        tryEnableSound(player);
+      }
+      syncMuteState(player);
+    },
+    [syncMuteState, tryEnableSound]
+  );
+
   const initPlayer = useCallback(() => {
     if (!playerContainerRef.current || playerRef.current || !window.YT?.Player) return;
 
@@ -117,12 +129,22 @@ export function YouTubeShortEmbed({
       },
       events: {
         onReady: (event) => {
-          startPlayback(event.target, true);
           setIsReady(true);
+
+          if (isInViewRef.current) {
+            startPlayback(event.target, true);
+          }
 
           window.setTimeout(() => {
             const player = playerRef.current;
-            if (!player || isPlayingRef.current || mutedFallbackAppliedRef.current) return;
+            if (
+              !player ||
+              !isInViewRef.current ||
+              isPlayingRef.current ||
+              mutedFallbackAppliedRef.current
+            ) {
+              return;
+            }
 
             mutedFallbackAppliedRef.current = true;
             player.mute();
@@ -148,14 +170,15 @@ export function YouTubeShortEmbed({
           }
 
           if (
-            event.data === YT.PlayerState.PAUSED ||
-            event.data === YT.PlayerState.UNSTARTED ||
-            event.data === YT.PlayerState.CUED
+            isInViewRef.current &&
+            (event.data === YT.PlayerState.PAUSED ||
+              event.data === YT.PlayerState.UNSTARTED ||
+              event.data === YT.PlayerState.CUED)
           ) {
             event.target.playVideo();
           }
 
-          if (event.data === YT.PlayerState.ENDED) {
+          if (event.data === YT.PlayerState.ENDED && isInViewRef.current) {
             event.target.seekTo(0, true);
             startPlayback(event.target, !userPrefersMutedRef.current);
           }
@@ -165,7 +188,33 @@ export function YouTubeShortEmbed({
   }, [startPlayback, syncMuteState, tryEnableSound, videoId]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isReady || !shellRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const player = playerRef.current;
+        const visible = entry.isIntersecting;
+        isInViewRef.current = visible;
+
+        if (!player) return;
+
+        if (visible) {
+          resumeShortPlayback(player);
+        } else {
+          player.pauseVideo();
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(shellRef.current);
+    return () => observer.disconnect();
+  }, [isReady, resumeShortPlayback]);
+
+  useEffect(() => {
+    if (!isPlaying || !isInViewRef.current) return;
 
     const player = playerRef.current;
     if (!player || userPrefersMutedRef.current) return;
