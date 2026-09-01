@@ -51,6 +51,7 @@ export function Hero() {
   const playerRef = useRef<YTPlayer | null>(null);
   const isInViewRef = useRef(true);
   const userPrefersMutedRef = useRef(false);
+  const hasUserInteractedRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -68,6 +69,23 @@ export function Hero() {
     },
     [syncMuteState]
   );
+
+  const resumeHeroPlayback = useCallback(
+    (player: YTPlayer) => {
+      player.playVideo();
+      if (hasUserInteractedRef.current) {
+        tryEnableSound(player);
+      }
+    },
+    [tryEnableSound]
+  );
+
+  const handleUserEngage = useCallback(() => {
+    hasUserInteractedRef.current = true;
+    const player = playerRef.current;
+    if (!player || !isInViewRef.current) return;
+    resumeHeroPlayback(player);
+  }, [resumeHeroPlayback]);
 
   const initPlayer = useCallback(() => {
     if (!playerContainerRef.current || playerRef.current || !window.YT?.Player) return;
@@ -108,6 +126,14 @@ export function Hero() {
           }
 
           if (
+            event.data === YT.PlayerState.PAUSED ||
+            event.data === YT.PlayerState.UNSTARTED ||
+            event.data === YT.PlayerState.CUED
+          ) {
+            setIsPlaying(false);
+          }
+
+          if (
             isInViewRef.current &&
             (event.data === YT.PlayerState.PAUSED ||
               event.data === YT.PlayerState.UNSTARTED ||
@@ -116,31 +142,32 @@ export function Hero() {
             event.target.playVideo();
           }
 
-          if (event.data === YT.PlayerState.ENDED) {
+          if (event.data === YT.PlayerState.ENDED && isInViewRef.current) {
             event.target.seekTo(0, true);
             event.target.playVideo();
           }
         },
       },
     });
-  }, [tryEnableSound]);
+  }, []);
 
   useEffect(() => {
     if (!isReady) return;
 
     const onFirstInteraction = () => {
-      const currentPlayer = playerRef.current;
-      if (currentPlayer) tryEnableSound(currentPlayer);
+      handleUserEngage();
     };
 
     window.addEventListener("pointerdown", onFirstInteraction, { once: true });
     window.addEventListener("keydown", onFirstInteraction, { once: true });
+    window.addEventListener("touchstart", onFirstInteraction, { once: true });
 
     return () => {
       window.removeEventListener("pointerdown", onFirstInteraction);
       window.removeEventListener("keydown", onFirstInteraction);
+      window.removeEventListener("touchstart", onFirstInteraction);
     };
-  }, [isReady, tryEnableSound]);
+  }, [isReady, handleUserEngage]);
 
   useEffect(() => {
     if (playerRef.current) return;
@@ -191,18 +218,21 @@ export function Hero() {
 
         if (visible) {
           shellRef.current?.classList.remove("opacity-0");
-          player.playVideo();
+          resumeHeroPlayback(player);
         } else {
           shellRef.current?.classList.add("opacity-0");
+          player.pauseVideo();
           player.mute();
+          syncMuteState(player);
+          setIsPlaying(false);
         }
       },
-      { threshold: 0 }
+      { threshold: 0.15 }
     );
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
-  }, [isReady, syncMuteState]);
+  }, [isReady, resumeHeroPlayback, syncMuteState]);
 
   useEffect(() => {
     return () => {
@@ -217,6 +247,7 @@ export function Hero() {
 
     if (player.isMuted()) {
       userPrefersMutedRef.current = false;
+      hasUserInteractedRef.current = true;
       player.unMute();
       setIsMuted(false);
     } else {
@@ -252,8 +283,10 @@ export function Hero() {
         <div
           className="hero-video-blocker absolute inset-0 z-[15]"
           aria-hidden="true"
-          onClick={(event) => event.preventDefault()}
-          onPointerDown={(event) => event.preventDefault()}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            handleUserEngage();
+          }}
         />
       </div>
 

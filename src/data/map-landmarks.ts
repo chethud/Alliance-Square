@@ -3,7 +3,7 @@ export interface MapLandmark {
   name: string;
   lat: number;
   lng: number;
-  type: "airport" | "city" | "highway";
+  type: "airport" | "city" | "highway" | "railway";
 }
 
 export interface MapCorridor {
@@ -18,11 +18,11 @@ export const MYSURU_ZOOM = 11;
 
 export const mapLandmarks: MapLandmark[] = [
   {
-    id: "mysuru-city",
-    name: "Mysuru City",
-    lat: 12.2958,
-    lng: 76.6394,
-    type: "city",
+    id: "mysuru-railway-station",
+    name: "Mysuru Junction Railway Station",
+    lat: 12.3169,
+    lng: 76.6422,
+    type: "railway",
   },
   {
     id: "mysuru-airport",

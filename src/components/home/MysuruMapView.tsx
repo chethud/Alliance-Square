@@ -20,6 +20,7 @@ import {
   mapCorridors,
   mapLandmarks,
 } from "@/data/map-landmarks";
+import { railwayLandmarkIcon } from "@/data/railway-landmark-icon";
 
 interface MysuruMapViewProps {
   markers: MapMarker[];
@@ -37,8 +38,15 @@ function createProjectIcon(active: boolean) {
   });
 }
 
-function createLandmarkIcon(type: "airport" | "city" | "highway") {
-  const label = type === "airport" ? "✈" : type === "city" ? "●" : "—";
+function createLandmarkIcon(type: "airport" | "city" | "highway" | "railway") {
+  const label =
+    type === "airport"
+      ? "✈"
+      : type === "railway"
+        ? railwayLandmarkIcon
+        : type === "city"
+          ? "●"
+          : "—";
   return L.divIcon({
     className: "asp-landmark-marker",
     html: `<div class="asp-landmark-marker-dot" data-type="${type}">${label}</div>`,
