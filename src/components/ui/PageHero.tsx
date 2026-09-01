@@ -32,10 +32,17 @@ export function PageHero({
 
   return (
     <section className="relative overflow-hidden">
-      <div className="relative min-h-[380px] md:min-h-[440px] lg:min-h-[480px]">
-        <Image src={image} alt={imageAlt} fill priority className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/75 to-dark/35" />
-        <div className="absolute inset-0 bg-mesh-dark opacity-50" />
+      <div className="page-hero-shell relative min-h-[380px] md:min-h-[440px] lg:min-h-[480px]">
+        <Image
+          src={image}
+          alt={imageAlt}
+          fill
+          priority
+          quality={92}
+          className="object-cover object-center hero-image-clarity scale-[1.03]"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/65 to-dark/20" />
         <BackButton
           fallbackHref={fallbackHref}
           label="Go back"

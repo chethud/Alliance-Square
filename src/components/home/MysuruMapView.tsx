@@ -11,7 +11,6 @@ import {
   Popup,
   Polyline,
   useMap,
-  ZoomControl,
 } from "react-leaflet";
 import type { MapMarker } from "@/types";
 import {
@@ -64,9 +63,6 @@ function MapBoundsLimit() {
     const maxBounds = L.latLng(MYSURU_CENTER).toBounds(MYSURU_MAP_MAX_RADIUS_M);
     map.setMaxBounds(maxBounds);
     map.options.maxBoundsViscosity = 1;
-
-    const minZoom = map.getBoundsZoom(maxBounds, false);
-    map.setMinZoom(minZoom);
   }, [map]);
 
   return null;
@@ -91,16 +87,16 @@ function MapResizeFix() {
   return null;
 }
 
-function EnableMapInteraction() {
+function LockMapView() {
   const map = useMap();
 
   useEffect(() => {
-    map.dragging.enable();
-    map.touchZoom.enable();
-    map.scrollWheelZoom.enable();
-    map.doubleClickZoom.enable();
-    map.boxZoom.enable();
-    map.keyboard.enable();
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.doubleClickZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
   }, [map]);
 
   return null;
@@ -116,6 +112,10 @@ function FitAllMarkers({ markers }: { markers: MapMarker[] }) {
     mapLandmarks.forEach((landmark) => bounds.extend([landmark.lat, landmark.lng]));
 
     map.fitBounds(bounds.pad(0.12), { animate: false });
+
+    const lockedZoom = map.getZoom();
+    map.setMinZoom(lockedZoom);
+    map.setMaxZoom(lockedZoom);
   }, [map, markers]);
 
   return null;
@@ -138,10 +138,11 @@ export function MysuruMapView({
     <MapContainer
       center={MYSURU_CENTER}
       zoom={MYSURU_ZOOM}
-      dragging
-      touchZoom
-      scrollWheelZoom
-      doubleClickZoom
+      dragging={false}
+      touchZoom={false}
+      scrollWheelZoom={false}
+      doubleClickZoom={false}
+      boxZoom={false}
       zoomControl={false}
       className="asp-leaflet-map h-full w-full"
       style={{ height: "100%", width: "100%" }}
@@ -209,10 +210,9 @@ export function MysuruMapView({
         </Marker>
       ))}
 
-      <ZoomControl position="bottomright" />
       <MapBoundsLimit />
       <MapResizeFix />
-      <EnableMapInteraction />
+      <LockMapView />
       <FitAllMarkers markers={markers} />
     </MapContainer>
   );

@@ -52,11 +52,10 @@ export default async function ProjectPage({ params }: PageProps) {
             alt={project.name}
             fill
             priority
-            className="object-cover"
+            quality={92}
+            className="object-cover object-center hero-image-clarity"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-dark/90 via-dark/60 to-dark/30" />
-          <div className="absolute inset-0 bg-mesh-dark opacity-50" />
           <BackButton
             fallbackHref="/layouts"
             label="Back to layouts"
@@ -66,20 +65,20 @@ export default async function ProjectPage({ params }: PageProps) {
 
         <div className="container-main relative -mt-32 pb-8 md:-mt-36 md:pb-10">
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex flex-wrap items-center gap-2 text-sm text-white/60">
+            <ol className="flex flex-wrap items-center gap-2 text-sm text-charcoal/70">
               <li>
-                <Link href="/" className="transition-colors hover:text-white">
+                <Link href="/" className="transition-colors hover:text-charcoal">
                   Home
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
               <li>
-                <Link href="/layouts" className="transition-colors hover:text-white">
+                <Link href="/layouts" className="transition-colors hover:text-charcoal">
                   Layouts
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li className="font-medium text-white" aria-current="page">
+              <li className="font-medium text-charcoal" aria-current="page">
                 {project.name}
               </li>
             </ol>
@@ -94,6 +93,7 @@ export default async function ProjectPage({ params }: PageProps) {
             tagline={project.tagline}
             brochureUrl={layoutsBrochureUrl}
             plotSizes={project.plotSizes}
+            heroImage={project.heroImage}
             youtubeShortId={project.youtubeShortId}
           />
         </div>

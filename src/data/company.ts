@@ -22,7 +22,7 @@ export const company = {
 export const stats: CompanyStats = {
   years: 20,
   layouts: 15,
-  customers: 5000,
+  customers: 4000,
   customerFocused: "100%",
 };
 
@@ -61,7 +61,7 @@ export const whyAllianceFeatures: WhyAllianceFeature[] = [
   },
   {
     number: "02",
-    title: "5,000+ Happy Customers",
+    title: "4,000+ Happy Customers",
     description:
       "Thousands of families have trusted Alliance Square for transparent, hassle-free property purchases and registrations.",
   },

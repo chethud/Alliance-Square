@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Download, MapPin } from "lucide-react";
 import { ApprovalBadge } from "@/components/projects/ApprovalBadge";
 import { YouTubeShortEmbed } from "@/components/projects/YouTubeShortEmbed";
@@ -16,6 +17,7 @@ interface ProjectHeroSectionProps {
   tagline: string;
   brochureUrl: string;
   plotSizes: string[];
+  heroImage: string;
   youtubeShortId?: string;
 }
 
@@ -28,6 +30,7 @@ export function ProjectHeroSection({
   tagline,
   brochureUrl,
   plotSizes,
+  heroImage,
   youtubeShortId,
 }: ProjectHeroSectionProps) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -123,16 +126,20 @@ export function ProjectHeroSection({
           />
         ) : (
           <div
-            className="mx-auto flex flex-col items-center justify-center rounded-2xl border border-dashed border-light-gray bg-white/95 p-6 text-center shadow-subtle"
+            className="relative mx-auto overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle"
             style={{
               height: mediaSize.height,
               width: mediaSize.width,
             }}
           >
-            <p className="text-sm font-semibold text-charcoal">Project Video</p>
-            <p className="mt-2 text-xs leading-relaxed text-cool-gray">
-              YouTube Short for this layout will appear here.
-            </p>
+            <Image
+              src={heroImage}
+              alt={`${name} layout`}
+              fill
+              className="object-cover object-center hero-image-clarity"
+              sizes="(max-width: 1024px) 100vw, 440px"
+              priority
+            />
           </div>
         )}
       </div>

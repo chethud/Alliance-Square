@@ -150,7 +150,15 @@
   }
 
   .hero-image-clarity {
-    filter: brightness(1.06) contrast(1.1) saturate(1.08);
+    filter: brightness(1.08) contrast(1.14) saturate(1.1);
+  }
+
+  .page-hero-shell {
+    isolation: isolate;
+  }
+
+  .page-hero-shell .hero-image-clarity {
+    will-change: transform;
   }
 
   .hero-video-shell {
