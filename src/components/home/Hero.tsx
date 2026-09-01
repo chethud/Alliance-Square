@@ -51,8 +51,9 @@ export function Hero() {
   const playerRef = useRef<YTPlayer | null>(null);
   const isInViewRef = useRef(true);
   const userPrefersMutedRef = useRef(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isReady, setIsReady] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(true);
 
   const syncMuteState = useCallback((player: YTPlayer) => {
@@ -91,13 +92,20 @@ export function Hero() {
       },
       events: {
         onReady: (event) => {
+          event.target.mute();
           event.target.playVideo();
-          tryEnableSound(event.target);
           setIsReady(true);
         },
         onStateChange: (event) => {
           const YT = window.YT;
           if (!YT) return;
+
+          if (
+            event.data === YT.PlayerState.PLAYING ||
+            event.data === YT.PlayerState.BUFFERING
+          ) {
+            setIsPlaying(true);
+          }
 
           if (
             isInViewRef.current &&
@@ -120,9 +128,6 @@ export function Hero() {
   useEffect(() => {
     if (!isReady) return;
 
-    const player = playerRef.current;
-    if (player) tryEnableSound(player);
-
     const onFirstInteraction = () => {
       const currentPlayer = playerRef.current;
       if (currentPlayer) tryEnableSound(currentPlayer);
@@ -138,27 +143,36 @@ export function Hero() {
   }, [isReady, tryEnableSound]);
 
   useEffect(() => {
+    if (playerRef.current) return;
+
+    let cancelled = false;
+    let pollId: number | undefined;
+
+    const boot = () => {
+      if (!cancelled) initPlayer();
+    };
+
     if (window.YT?.Player) {
       initPlayer();
       return;
     }
 
-    const existingScript = document.getElementById("youtube-iframe-api");
-    if (!existingScript) {
-      const script = document.createElement("script");
-      script.id = "youtube-iframe-api";
-      script.src = "https://www.youtube.com/iframe_api";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-
     const previousReady = window.onYouTubeIframeAPIReady;
     window.onYouTubeIframeAPIReady = () => {
       previousReady?.();
-      initPlayer();
+      boot();
     };
 
+    pollId = window.setInterval(() => {
+      if (window.YT?.Player) {
+        window.clearInterval(pollId);
+        boot();
+      }
+    }, 100);
+
     return () => {
+      cancelled = true;
+      if (pollId) window.clearInterval(pollId);
       window.onYouTubeIframeAPIReady = previousReady;
     };
   }, [initPlayer]);
@@ -178,10 +192,6 @@ export function Hero() {
         if (visible) {
           shellRef.current?.classList.remove("opacity-0");
           player.playVideo();
-          if (!userPrefersMutedRef.current) {
-            player.unMute();
-            syncMuteState(player);
-          }
         } else {
           shellRef.current?.classList.add("opacity-0");
           player.mute();
@@ -219,14 +229,15 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden"
+      className="relative min-h-screen overflow-hidden bg-dark"
       aria-label="Hero"
     >
       <div className="absolute inset-0">
         <div
           ref={shellRef}
           className={cn(
-            "hero-video-shell absolute inset-0 overflow-hidden transition-opacity duration-300",
+            "hero-video-shell absolute inset-0 overflow-hidden transition-opacity duration-700",
+            !isPlaying && "opacity-0",
             !isInView && "pointer-events-none opacity-0"
           )}
           aria-hidden="true"
