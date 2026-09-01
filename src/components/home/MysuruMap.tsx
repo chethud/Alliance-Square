@@ -23,6 +23,21 @@ const MysuruMapView = dynamic(
 
 const { running: runningMarkers, completed: completedMarkers } = getGroupedMapMarkers();
 
+function ProjectStatusBadge({ status }: { status: "running" | "completed" }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em]",
+        status === "running"
+          ? "bg-emerald-500/12 text-emerald-700"
+          : "bg-light-gray text-cool-gray"
+      )}
+    >
+      {status === "running" ? "Currently Running" : "Completed"}
+    </span>
+  );
+}
+
 function ProjectListItem({
   marker,
   status,
@@ -59,16 +74,7 @@ function ProjectListItem({
             >
               {marker.name}
             </span>
-            <span
-              className={cn(
-                "inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]",
-                status === "running"
-                  ? "bg-emerald-500/12 text-emerald-700"
-                  : "bg-light-gray text-cool-gray"
-              )}
-            >
-              {status === "running" ? "Currently Running" : "Completed"}
-            </span>
+            <ProjectStatusBadge status={status} />
           </span>
           <span
             className={cn(
@@ -97,6 +103,11 @@ export function MysuruMap() {
     runningMarkers[0]?.projectSlug ?? mapMarkers[0]?.projectSlug ?? null
   );
   const active = mapMarkers.find((m) => m.projectSlug === activeMarker);
+  const activeStatus = active
+    ? runningMarkers.some((m) => m.projectSlug === active.projectSlug)
+      ? "running"
+      : "completed"
+    : null;
 
   return (
     <section id="mysuru-map" className="section-pad bg-off-white" aria-labelledby="map-heading">
@@ -153,9 +164,12 @@ export function MysuruMap() {
                       sizes="340px"
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-white/95 p-5 backdrop-blur-sm lg:p-6">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-cyan">
-                        Project Preview
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-cyan">
+                          Project Preview
+                        </p>
+                        {activeStatus && <ProjectStatusBadge status={activeStatus} />}
+                      </div>
                       <h3 className="mt-1.5 text-xl font-bold leading-tight text-charcoal lg:text-2xl">{active.name}</h3>
                       <p className="mt-1.5 text-sm font-semibold text-cool-gray lg:text-base">{active.priceLabel}</p>
                       <p className="mt-1 text-xs leading-snug text-cool-gray">{active.location}</p>
