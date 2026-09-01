@@ -3,8 +3,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getShortEmbedSize } from "@/lib/short-embed-size";
 
-const HERO_VIDEO_ID = "KWV_2LWONlw";
+interface YouTubeShortEmbedProps {
+  videoId: string;
+  title: string;
+  height?: number;
+  width?: number;
+  fillScale?: number;
+}
 
 interface YTPlayer {
   mute: () => void;
@@ -44,17 +51,22 @@ declare global {
   }
 }
 
-export function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
+export function YouTubeShortEmbed({
+  videoId,
+  title,
+  height,
+  width,
+  fillScale = 1.35,
+}: YouTubeShortEmbedProps) {
   const shellRef = useRef<HTMLDivElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
-  const isInViewRef = useRef(true);
   const userPrefersMutedRef = useRef(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const mutedFallbackAppliedRef = useRef(false);
+  const isPlayingRef = useRef(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isInView, setIsInView] = useState(true);
 
   const syncMuteState = useCallback((player: YTPlayer) => {
     setIsMuted(player.isMuted());
@@ -69,15 +81,28 @@ export function Hero() {
     [syncMuteState]
   );
 
+  const startPlayback = useCallback(
+    (player: YTPlayer, preferSound: boolean) => {
+      if (preferSound && !userPrefersMutedRef.current) {
+        player.unMute();
+      } else {
+        player.mute();
+      }
+      player.playVideo();
+      syncMuteState(player);
+    },
+    [syncMuteState]
+  );
+
   const initPlayer = useCallback(() => {
     if (!playerContainerRef.current || playerRef.current || !window.YT?.Player) return;
 
     playerRef.current = new window.YT.Player(playerContainerRef.current, {
-      videoId: HERO_VIDEO_ID,
+      videoId,
       host: "https://www.youtube-nocookie.com",
       playerVars: {
         autoplay: 1,
-        mute: 1,
+        mute: 0,
         controls: 0,
         rel: 0,
         modestbranding: 1,
@@ -92,9 +117,19 @@ export function Hero() {
       },
       events: {
         onReady: (event) => {
-          event.target.mute();
-          event.target.playVideo();
+          startPlayback(event.target, true);
           setIsReady(true);
+
+          window.setTimeout(() => {
+            const player = playerRef.current;
+            if (!player || isPlayingRef.current || mutedFallbackAppliedRef.current) return;
+
+            mutedFallbackAppliedRef.current = true;
+            player.mute();
+            player.playVideo();
+            syncMuteState(player);
+            tryEnableSound(player);
+          }, 1800);
         },
         onStateChange: (event) => {
           const YT = window.YT;
@@ -104,33 +139,57 @@ export function Hero() {
             event.data === YT.PlayerState.PLAYING ||
             event.data === YT.PlayerState.BUFFERING
           ) {
+            isPlayingRef.current = true;
             setIsPlaying(true);
           }
 
+          if (event.data === YT.PlayerState.PLAYING) {
+            tryEnableSound(event.target);
+          }
+
           if (
-            isInViewRef.current &&
-            (event.data === YT.PlayerState.PAUSED ||
-              event.data === YT.PlayerState.UNSTARTED ||
-              event.data === YT.PlayerState.CUED)
+            event.data === YT.PlayerState.PAUSED ||
+            event.data === YT.PlayerState.UNSTARTED ||
+            event.data === YT.PlayerState.CUED
           ) {
             event.target.playVideo();
           }
 
           if (event.data === YT.PlayerState.ENDED) {
             event.target.seekTo(0, true);
-            event.target.playVideo();
+            startPlayback(event.target, !userPrefersMutedRef.current);
           }
         },
       },
     });
-  }, [tryEnableSound]);
+  }, [startPlayback, syncMuteState, tryEnableSound, videoId]);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const player = playerRef.current;
+    if (!player || userPrefersMutedRef.current) return;
+
+    const delays = [0, 120, 350, 700, 1200];
+    const timers = delays.map((delay) =>
+      window.setTimeout(() => {
+        if (!playerRef.current || userPrefersMutedRef.current) return;
+        tryEnableSound(playerRef.current);
+        playerRef.current.playVideo();
+      }, delay)
+    );
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [isPlaying, tryEnableSound]);
 
   useEffect(() => {
     if (!isReady) return;
 
     const onFirstInteraction = () => {
-      const currentPlayer = playerRef.current;
-      if (currentPlayer) tryEnableSound(currentPlayer);
+      const player = playerRef.current;
+      if (player) tryEnableSound(player);
     };
 
     window.addEventListener("pointerdown", onFirstInteraction, { once: true });
@@ -178,33 +237,6 @@ export function Hero() {
   }, [initPlayer]);
 
   useEffect(() => {
-    if (!isReady || !sectionRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const player = playerRef.current;
-        const visible = entry.isIntersecting;
-        isInViewRef.current = visible;
-        setIsInView(visible);
-
-        if (!player) return;
-
-        if (visible) {
-          shellRef.current?.classList.remove("opacity-0");
-          player.playVideo();
-        } else {
-          shellRef.current?.classList.add("opacity-0");
-          player.mute();
-        }
-      },
-      { threshold: 0 }
-    );
-
-    observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, [isReady, syncMuteState]);
-
-  useEffect(() => {
     return () => {
       playerRef.current?.destroy();
       playerRef.current = null;
@@ -226,31 +258,36 @@ export function Hero() {
     }
   };
 
-  return (
-    <section
-      ref={sectionRef}
-      className="relative h-screen min-h-[480px] w-full overflow-hidden bg-dark"
-      aria-label="Hero"
-    >
-      <div className="absolute inset-0">
-        <div
-          ref={shellRef}
-          className={cn(
-            "hero-video-shell absolute inset-0 overflow-hidden transition-opacity duration-700",
-            !isPlaying && "opacity-0",
-            !isInView && "pointer-events-none opacity-0"
-          )}
-          aria-hidden="true"
-        >
-          <div
-            ref={playerContainerRef}
-            className="hero-video-player"
-          />
-        </div>
+  const hasMeasuredHeight = Boolean(height && height > 0);
+  const sizedStyle = hasMeasuredHeight
+    ? { height, width: width ?? getShortEmbedSize(height).width }
+    : undefined;
 
-        {/* Blocks all taps from reaching the YouTube iframe */}
+  return (
+    <div
+      className={cn(
+        "relative shrink-0",
+        !hasMeasuredHeight && "mx-auto h-[420px] w-[315px] sm:h-[440px] sm:w-[330px]"
+      )}
+      style={sizedStyle}
+    >
+      <div
+        ref={shellRef}
+        className="project-short-shell relative h-full w-full overflow-hidden rounded-2xl border border-light-gray/80 shadow-premium"
+        style={{ ["--short-fill-scale" as string]: fillScale }}
+        aria-label={title}
+      >
+        <div ref={playerContainerRef} className="project-short-player" />
+        {!isPlaying && (
+          <div
+            className="absolute inset-0 z-[1] flex items-center justify-center bg-charcoal/[0.04]"
+            aria-hidden="true"
+          >
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-cyan/25 border-t-brand-cyan" />
+          </div>
+        )}
         <div
-          className="hero-video-blocker absolute inset-0 z-[15]"
+          className="project-short-blocker absolute inset-0 z-[2]"
           aria-hidden="true"
           onClick={(event) => event.preventDefault()}
           onPointerDown={(event) => event.preventDefault()}
@@ -261,16 +298,16 @@ export function Hero() {
         type="button"
         onClick={toggleMute}
         disabled={!isReady}
-        className="absolute bottom-6 left-6 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-dark/45 text-white backdrop-blur-sm transition-colors hover:bg-dark/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-not-allowed disabled:opacity-40 md:bottom-8 md:left-8"
-        aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
+        className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-dark/55 text-white backdrop-blur-sm transition-colors hover:bg-dark/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label={isMuted ? `Unmute ${title}` : `Mute ${title}`}
         aria-pressed={!isMuted}
       >
         {isMuted ? (
-          <VolumeX className="h-5 w-5" aria-hidden="true" />
+          <VolumeX className="h-4 w-4" aria-hidden="true" />
         ) : (
-          <Volume2 className="h-5 w-5" aria-hidden="true" />
+          <Volume2 className="h-4 w-4" aria-hidden="true" />
         )}
       </button>
-    </section>
+    </div>
   );
 }

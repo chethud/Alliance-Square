@@ -9,8 +9,8 @@ export function SiteVisitCTA() {
     <section className="relative overflow-hidden" aria-labelledby="site-visit-heading">
       <div className="relative min-h-[520px] lg:min-h-[560px]">
         <Image
-          src={projectImage("jeevan-vihar-phase-2")}
-          alt="Jeevan Vihar Phase 2 — Alliance Square layout in Mysuru"
+          src={projectImage("uk-square")}
+          alt="UK Square — Alliance Square layout in Mysuru"
           fill
           priority
           quality={90}

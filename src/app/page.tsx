@@ -11,7 +11,6 @@ import { SiteVisitCTA } from "@/components/home/SiteVisitCTA";
 import { TestimonialCarousel } from "@/components/home/TestimonialCarousel";
 import { BlogGrid } from "@/components/home/BlogGrid";
 import { LeadForm } from "@/components/forms/LeadForm";
-import { ContactSection } from "@/components/home/ContactSection";
 import { WebSiteSchema } from "@/components/seo/StructuredData";
 
 export default function HomePage() {
@@ -31,7 +30,6 @@ export default function HomePage() {
       <TestimonialCarousel />
       <BlogGrid />
       <LeadForm />
-      <ContactSection />
     </>
   );
 }

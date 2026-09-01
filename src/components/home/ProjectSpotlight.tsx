@@ -6,8 +6,10 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { getSpotlightProjects } from "@/data/projects";
 import type { Project } from "@/types";
+import { cn } from "@/lib/utils";
 
 const SPOTLIGHT_PROJECTS = getSpotlightProjects();
+const TOTAL = SPOTLIGHT_PROJECTS.length;
 const ROTATE_MS = 3500;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -31,6 +33,41 @@ function SpotlightContent({ project }: { project: Project }) {
   );
 }
 
+function SpotlightDots({
+  current,
+  onSelect,
+  className,
+}: {
+  current: number;
+  onSelect: (index: number) => void;
+  className?: string;
+}) {
+  if (TOTAL <= 1) return null;
+
+  return (
+    <div
+      className={cn("flex items-center gap-2", className)}
+      role="tablist"
+      aria-label="Project spotlight slides"
+    >
+      {SPOTLIGHT_PROJECTS.map((item, index) => (
+        <button
+          key={item.id}
+          type="button"
+          role="tab"
+          aria-selected={index === current}
+          aria-label={`Show ${item.name}, slide ${index + 1} of ${TOTAL}`}
+          onClick={() => onSelect(index)}
+          className={cn(
+            "h-2.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-dark/40",
+            index === current ? "w-7 bg-brand-cyan" : "w-2.5 bg-white/45 hover:bg-white/70"
+          )}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function ProjectSpotlight() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -38,11 +75,15 @@ export function ProjectSpotlight() {
   const project = SPOTLIGHT_PROJECTS[current];
 
   const next = useCallback(() => {
-    setCurrent((index) => (index + 1) % SPOTLIGHT_PROJECTS.length);
+    setCurrent((index) => (index + 1) % TOTAL);
+  }, []);
+
+  const goTo = useCallback((index: number) => {
+    setCurrent(index);
   }, []);
 
   useEffect(() => {
-    if (reduceMotion || isPaused || SPOTLIGHT_PROJECTS.length <= 1) return;
+    if (reduceMotion || isPaused || TOTAL <= 1) return;
 
     const timer = window.setInterval(next, ROTATE_MS);
     return () => window.clearInterval(timer);
@@ -94,6 +135,12 @@ export function ProjectSpotlight() {
               </motion.div>
             </AnimatePresence>
           </div>
+
+          <SpotlightDots
+            current={current}
+            onSelect={goTo}
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 md:bottom-8"
+          />
         </div>
       </div>
     </section>

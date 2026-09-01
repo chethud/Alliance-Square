@@ -40,8 +40,8 @@ function StoryVisual({ driver, active }: { driver: GrowthDriver; active: boolean
   return (
     <div
       className={cn(
-        "story-visual relative min-h-0 w-full shrink-0 overflow-hidden transition-opacity duration-500",
-        active ? "opacity-100" : "opacity-55"
+        "relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#E8ECEF]",
+        active ? "opacity-100" : "opacity-70"
       )}
       aria-hidden="true"
     >
@@ -49,7 +49,7 @@ function StoryVisual({ driver, active }: { driver: GrowthDriver; active: boolean
         src={image}
         alt=""
         fill
-        className="object-cover"
+        className="object-cover object-center"
         sizes="(max-width: 768px) 100vw, 33vw"
       />
     </div>
@@ -205,41 +205,39 @@ function GrowthStory({
       data-index={index}
       initial={false}
       animate={{ opacity: 1, y: 0 }}
-      className="relative flex min-h-[400px] min-w-0 scroll-mt-32 flex-col border-b border-charcoal/[0.08] last:border-b-0 md:min-h-[440px] md:border-b-0 md:odd:border-r md:odd:border-charcoal/[0.08]"
+      className="relative flex min-w-0 scroll-mt-32 flex-col border-b border-charcoal/[0.08] bg-[#F7F9FA] md:odd:border-r md:odd:border-charcoal/[0.08] md:[&:nth-last-child(-n+2)]:border-b-0"
     >
       <StoryVisual driver={driver} active={isInView} />
 
-      <div className="relative flex min-h-0 flex-[3] flex-col justify-center px-5 py-5 md:px-5 md:py-6 lg:px-6 lg:pl-8">
-        <div className="relative">
-          <div className="flex flex-wrap items-center gap-3">
-            <CategoryBadge label={driver.label.toUpperCase()} active={isInView} />
-          </div>
-
-          <h3
-            className={cn(
-              "mt-3 text-[22px] font-semibold leading-[1.15] tracking-[-0.02em] text-charcoal transition-opacity duration-300 md:text-[24px] lg:text-[26px]",
-              isInView ? "opacity-100" : "opacity-80"
-            )}
-          >
-            {titleParts.map((part, i) => (
-              <span key={part} className="block">
-                {part}
-              </span>
-            ))}
-          </h3>
-
-          <p className="mt-3 line-clamp-3 text-[15px] leading-[1.6] text-[#687178] md:text-[16px]">
-            {driver.description}
-          </p>
-
-          <motion.div
-            initial={false}
-            animate={{ scaleX: isInView ? 1 : 0 }}
-            transition={{ duration: 0.5, delay: 0.06, ease: EASE }}
-            className="mt-4 h-px max-w-[200px] origin-left bg-charcoal/[0.12]"
-            aria-hidden="true"
-          />
+      <div className="flex flex-col px-5 py-6 md:px-6 lg:pl-8 lg:pr-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <CategoryBadge label={driver.label.toUpperCase()} active={isInView} />
         </div>
+
+        <h3
+          className={cn(
+            "mt-4 text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-charcoal transition-opacity duration-300 md:text-[24px] lg:text-[26px]",
+            isInView ? "opacity-100" : "opacity-80"
+          )}
+        >
+          {titleParts.map((part, i) => (
+            <span key={part} className="block">
+              {part}
+            </span>
+          ))}
+        </h3>
+
+        <p className="mt-3 text-[15px] leading-[1.65] text-[#687178] md:text-[16px]">
+          {driver.description}
+        </p>
+
+        <motion.div
+          initial={false}
+          animate={{ scaleX: isInView ? 1 : 0 }}
+          transition={{ duration: 0.5, delay: 0.06, ease: EASE }}
+          className="mt-5 h-px max-w-[200px] origin-left bg-charcoal/[0.12]"
+          aria-hidden="true"
+        />
       </div>
     </motion.article>
   );
@@ -349,7 +347,7 @@ export function WhyMysuru() {
 
           {/* Right — editorial stories */}
           <div className="relative w-full min-w-0 lg:col-span-8">
-            <div className="grid w-full grid-cols-1 md:grid-cols-2 md:divide-y md:divide-charcoal/[0.08]">
+            <div className="grid w-full grid-cols-1 overflow-hidden rounded-sm border border-charcoal/[0.08] md:grid-cols-2">
               {growthDrivers.map((driver, index) => (
                 <GrowthStory
                   key={driver.id}

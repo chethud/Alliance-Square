@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Download, ArrowRight } from "lucide-react";
-import { ApprovalBadge } from "@/components/projects/ApprovalBadge";
+import { ArrowRight } from "lucide-react";
 import { Gallery } from "@/components/projects/Gallery";
+import { ProjectHeroSection } from "@/components/projects/ProjectHeroSection";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { SiteVisitForm } from "@/components/forms/SiteVisitForm";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -85,25 +85,17 @@ export default async function ProjectPage({ params }: PageProps) {
             </ol>
           </nav>
 
-          <div className="max-w-3xl rounded-2xl border border-white/10 bg-white/95 p-8 shadow-premium backdrop-blur-xl md:p-12">
-            <ApprovalBadge approvals={project.approvals} />
-            <h1 className="heading-section mt-6">{project.name}</h1>
-            <p className="mt-3 flex items-center gap-2 text-cool-gray">
-              <MapPin className="h-4 w-4 text-brand-cyan" aria-hidden="true" />
-              {project.location.area}, {project.location.city}
-            </p>
-            <p className="mt-4 text-2xl font-bold text-charcoal">{project.priceLabel}</p>
-            <p className="mt-4 text-body">{project.tagline}</p>
-            <a
-              href={layoutsBrochureUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary mt-8 inline-flex w-full sm:w-auto"
-            >
-              <Download className="h-4 w-4" aria-hidden="true" />
-              Download Brochure
-            </a>
-          </div>
+          <ProjectHeroSection
+            name={project.name}
+            approvals={project.approvals}
+            locationArea={project.location.area}
+            locationCity={project.location.city}
+            priceLabel={project.priceLabel}
+            tagline={project.tagline}
+            brochureUrl={layoutsBrochureUrl}
+            plotSizes={project.plotSizes}
+            youtubeShortId={project.youtubeShortId}
+          />
         </div>
       </section>
 
@@ -128,22 +120,6 @@ export default async function ProjectPage({ params }: PageProps) {
                     </li>
                   ))}
                 </ul>
-              </div>
-            </FadeIn>
-
-            <FadeIn>
-              <div>
-                <h2 className="font-bold text-3xl text-charcoal">Available Plot Sizes</h2>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {project.plotSizes.map((size) => (
-                    <span
-                      key={size}
-                      className="rounded-full border border-light-gray bg-white px-6 py-3 text-sm font-semibold text-charcoal shadow-subtle"
-                    >
-                      {size}
-                    </span>
-                  ))}
-                </div>
               </div>
             </FadeIn>
 

@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { projects, filterOptions } from "@/data/projects";
-import type { ProjectFilter } from "@/types";
+import { layoutsPageOrder, getProjectsInOrder } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+const HOME_PROJECT_LIMIT = 3;
 
 const layoutSpring = {
   type: "spring" as const,
@@ -18,11 +17,8 @@ const layoutSpring = {
 };
 
 export function ProjectGrid({ showHeader = true }: { showHeader?: boolean }) {
-  const [activeFilter, setActiveFilter] = useState<ProjectFilter>("all");
   const reduceMotion = useReducedMotion();
-
-  const filtered =
-    activeFilter === "all" ? projects : projects.filter((p) => p.filters.includes(activeFilter));
+  const displayed = getProjectsInOrder(layoutsPageOrder).slice(0, HOME_PROJECT_LIMIT);
 
   return (
     <section
@@ -40,48 +36,13 @@ export function ProjectGrid({ showHeader = true }: { showHeader?: boolean }) {
           />
         )}
 
-        <div
-          className={cn("flex flex-wrap gap-2", showHeader ? "mt-8" : "mt-0")}
-          role="tablist"
-          aria-label="Filter projects"
-        >
-          {filterOptions.map((option) => {
-            const isActive = activeFilter === option.value;
-
-            return (
-              <button
-                key={option.value}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActiveFilter(option.value)}
-                className={cn(
-                  "relative rounded-full border px-5 py-2.5 text-sm font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan focus-visible:ring-offset-2",
-                  isActive
-                    ? "border-brand-cyan text-white"
-                    : "border-light-gray bg-white text-charcoal hover:border-brand-cyan hover:text-brand-cyan"
-                )}
-              >
-                {isActive && (
-                  <motion.span
-                    layoutId="project-filter-pill"
-                    className="absolute inset-0 rounded-full bg-brand-cyan shadow-glow"
-                    transition={reduceMotion ? { duration: 0 } : layoutSpring}
-                    aria-hidden="true"
-                  />
-                )}
-                <span className="relative z-10">{option.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
         <motion.div
           layout
           transition={reduceMotion ? { duration: 0 } : { layout: layoutSpring }}
-          className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          className={cn("grid gap-6 md:grid-cols-2 lg:grid-cols-3", showHeader ? "mt-8" : "mt-0")}
         >
           <AnimatePresence mode="popLayout" initial={false}>
-            {filtered.map((project, index) => (
+            {displayed.map((project, index) => (
               <motion.div
                 key={project.id}
                 layout

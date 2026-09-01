@@ -36,6 +36,8 @@ export interface Project {
   gallery: string[];
   listingDescription?: string;
   brochureUrl?: string;
+  /** YouTube Shorts video ID (from youtube.com/shorts/{id}) */
+  youtubeShortId?: string;
 }
 
 export interface Testimonial {

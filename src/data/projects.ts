@@ -100,6 +100,7 @@ export const projects: Project[] = [
     gallery: [projectImage("cnm-apex-city")],
     listingDescription:
       "CNM Apex City is a premium residential layout on Srirampura Ring Road, Mysuru, offering excellent connectivity and future growth. With essential amenities and a strategic location near key landmarks, it's ideal for both living and smart investment.",
+    youtubeShortId: "4mZ_jTHoI1Q",
   },
   {
     id: "sridevi-lake-view",
@@ -141,6 +142,7 @@ export const projects: Project[] = [
     gallery: [projectImage("sridevi-lake-view")],
     listingDescription:
       "Sridevi Lake View is a premium residential layout with DTCP approval. It is located off T Narasipura Road and offers all major facilities.",
+    youtubeShortId: "_PGeDN80qCg",
   },
   {
     id: "jeevan-vihar-phase-2",
@@ -426,7 +428,7 @@ export function getFeaturedProject(): Project {
 }
 
 export function getSpotlightProjects(): Project[] {
-  return projects;
+  return getProjectsInOrder(runningMapMarkerOrder);
 }
 
 export function getRelatedProjects(currentSlug: string, limit = 3): Project[] {
