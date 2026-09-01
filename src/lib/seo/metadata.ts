@@ -82,4 +82,9 @@ export const rootMetadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: [{ url: "/favicon.jpg", type: "image/jpeg" }],
+    shortcut: "/favicon.jpg",
+    apple: "/favicon.jpg",
+  },
 };
