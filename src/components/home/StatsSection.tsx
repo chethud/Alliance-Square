@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { animate, useInView, useReducedMotion } from "framer-motion";
 import { stats } from "@/data/company";
 
@@ -28,14 +29,13 @@ function AnimatedStatValue({
   play: boolean;
 }) {
   const reduceMotion = useReducedMotion();
-  const hasPlayed = useRef(false);
   const [display, setDisplay] = useState(() => `${format(target)}${suffix}`);
 
   useEffect(() => {
-    if (!play || hasPlayed.current) return;
-    hasPlayed.current = true;
+    if (!play) return;
 
     if (reduceMotion) {
+      setDisplay(`${format(target)}${suffix}`);
       return;
     }
 
@@ -48,7 +48,10 @@ function AnimatedStatValue({
       onComplete: () => setDisplay(`${format(target)}${suffix}`),
     });
 
-    return () => controls.stop();
+    return () => {
+      controls.stop();
+      setDisplay(`${format(target)}${suffix}`);
+    };
   }, [play, target, suffix, format, reduceMotion]);
 
   return (
@@ -59,28 +62,19 @@ function AnimatedStatValue({
 }
 
 export function StatsSection() {
+  const pathname = usePathname();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, {
-    once: true,
     amount: 0.2,
     margin: "0px 0px -10% 0px",
   });
-  const [visible, setVisible] = useState(true);
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
-    if (isInView) {
-      setVisible(true);
-      return;
+    if (pathname === "/") {
+      setAnimationKey((key) => key + 1);
     }
-
-    const node = sectionRef.current;
-    if (!node) return;
-
-    const rect = node.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      setVisible(true);
-    }
-  }, [isInView]);
+  }, [pathname]);
 
   return (
     <section
@@ -99,10 +93,11 @@ export function StatsSection() {
               }`}
             >
               <AnimatedStatValue
+                key={`${animationKey}-${item.label}`}
                 target={item.target}
                 suffix={item.suffix}
                 format={item.format}
-                play={visible}
+                play={isInView}
               />
               <p className="mt-2 max-w-[160px] text-xs leading-snug text-white/55 md:max-w-[180px] md:text-sm">
                 {item.label}

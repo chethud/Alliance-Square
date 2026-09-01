@@ -57,10 +57,10 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="hidden items-center justify-end gap-4 lg:flex">
+            <div className="hidden items-center justify-end lg:flex">
               <a
                 href={company.phoneHref}
-                className="hidden items-center gap-2 whitespace-nowrap text-sm font-medium text-charcoal transition-colors hover:text-brand-cyan xl:flex"
+                className="flex items-center gap-2 whitespace-nowrap text-sm font-medium text-charcoal transition-colors hover:text-brand-cyan"
                 aria-label={`Call ${company.phone}`}
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-cyan/10">
@@ -68,12 +68,16 @@ export function Navbar() {
                 </span>
                 {company.phone}
               </a>
-              <Link href="/contact#site-visit" className="btn-primary whitespace-nowrap text-xs xl:text-sm">
-                Schedule Site Visit
-              </Link>
             </div>
 
             <div className="flex items-center justify-end gap-2 lg:hidden">
+              <a
+                href={company.phoneHref}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-light-gray bg-white text-brand-cyan transition-colors hover:border-brand-cyan/30 hover:bg-brand-cyan/5"
+                aria-label={`Call ${company.phone}`}
+              >
+                <Phone className="h-4 w-4" />
+              </a>
               <Link href="/contact#site-visit" className="btn-primary px-4 py-2.5 text-xs">
                 Visit
               </Link>
