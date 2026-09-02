@@ -33,7 +33,7 @@ export function ApprovalSection() {
 
           <div>
             <FadeIn delay={0.2}>
-              <p className="label-accent">Your Journey</p>
+              <p className="label-upper text-brand-cyan">Your Journey</p>
               <div className="mt-8 space-y-0">
                 {approvalSteps.map((step, index) => (
                   <div key={step.number} className="relative flex gap-6 pb-8">

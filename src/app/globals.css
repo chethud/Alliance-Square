@@ -60,12 +60,7 @@
   }
 
   .label-accent {
-    @apply inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-cyan md:text-xs;
-  }
-
-  .label-accent::before {
-    content: '';
-    @apply h-px w-8 bg-brand-cyan;
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-cyan md:text-xs;
   }
 
   .heading-display {

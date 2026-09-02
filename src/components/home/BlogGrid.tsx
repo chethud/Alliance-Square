@@ -3,7 +3,6 @@ import Link from "next/link";
 import { FadeIn } from "@/components/ui/Motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { blogPosts } from "@/data/blogs";
-import { formatDate } from "@/lib/utils";
 
 export function BlogGrid() {
   const posts = blogPosts.slice(0, 3);
@@ -24,8 +23,11 @@ export function BlogGrid() {
         <div className="mt-8 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (
             <FadeIn key={post.id} delay={index * 0.1} className="h-full">
-              <Link href={`/insights/${post.slug}`} className="premium-card group flex h-full flex-col">
-                <div className="relative aspect-[16/10] shrink-0 overflow-hidden">
+              <Link
+                href={`/insights/${post.slug}`}
+                className="premium-card group relative block h-full min-h-[360px] overflow-hidden md:min-h-[400px]"
+              >
+                <div className="absolute inset-0">
                   <Image
                     src={post.image}
                     alt={post.title}
@@ -34,18 +36,13 @@ export function BlogGrid() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-                <div className="flex flex-1 flex-col p-6 md:p-7">
-                  <div className="flex items-center gap-3">
-                    <span className="badge">{post.category}</span>
-                    <span className="text-xs text-cool-gray">{formatDate(post.date)}</span>
-                  </div>
-                  <h3 className="mt-4 line-clamp-2 min-h-[3.5rem] text-xl font-bold leading-snug text-charcoal md:min-h-[4rem] md:text-2xl">
+                <div className="absolute inset-0 bg-gradient-to-t from-dark/95 via-dark/55 via-35% to-dark/15" />
+
+                <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col p-6 md:p-7">
+                  <h3 className="text-xl font-bold leading-snug text-white/85 md:text-2xl">
                     {post.title}
                   </h3>
-                  <p className="mt-2 line-clamp-3 min-h-[4.5rem] text-sm leading-relaxed text-cool-gray">
-                    {post.excerpt}
-                  </p>
-                  <span className="link-arrow mt-auto pt-5">Read Article →</span>
+                  <span className="link-arrow mt-4 text-brand-cyan">Read Article →</span>
                 </div>
               </Link>
             </FadeIn>

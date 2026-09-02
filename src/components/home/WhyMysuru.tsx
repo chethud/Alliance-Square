@@ -296,8 +296,7 @@ export function WhyMysuru() {
       <div className="relative mx-auto w-full max-w-[1360px] px-5 md:px-12 lg:px-16">
         {/* Editorial header */}
         <header className="w-full">
-          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-cyan">
-            <span className="inline-block h-2 w-2 shrink-0 bg-brand-cyan" aria-hidden="true" />
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-cyan">
             Investment Context
           </p>
 

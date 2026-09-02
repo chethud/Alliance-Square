@@ -13,13 +13,15 @@ export const apartmentImages = {
 } as const;
 
 export const blogImages = {
-  rera: "/images/blogs/rera.jpg",
-  "hospitality-hub": "/images/blogs/hospitality-hub.jpg",
-  "why-alliance-square": "/images/blogs/why-alliance-square.jpg",
+  rera: "/images/blogs/rera.png",
+  "hospitality-hub": "/images/blogs/hospitality-hub.png",
+  "why-alliance-square": "/images/blogs/why-alliance-square.png",
   "rv-university": "/images/blogs/rv-university.png",
   "greater-mysuru": "/images/blogs/greater-mysuru.jpg",
-  "bengaluru-connectivity": "/images/blogs/bengaluru-connectivity.jpg",
+  "bengaluru-connectivity": "/images/blogs/bengaluru-connectivity.png",
 } as const;
+
+export const insightsHero = "/images/blogs/insights-hero.png";
 
 export const testimonialImages = [
   "/images/testimonials/testimonial-01.jpeg",

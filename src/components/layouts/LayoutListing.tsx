@@ -11,10 +11,16 @@ import {
 import type { ProjectFilter } from "@/types";
 import { cn } from "@/lib/utils";
 
+/** Hidden on /layouts only — project page remains available */
+const layoutsListingExcludedSlugs = new Set(["dhatri-square", "dr-daya-nagar"]);
+
 export function LayoutListing() {
   const [activeFilter, setActiveFilter] = useState<ProjectFilter>("all");
 
-  const orderedProjects = useMemo(() => getProjectsInOrder(layoutsPageOrder), []);
+  const orderedProjects = useMemo(
+    () => getProjectsInOrder(layoutsPageOrder).filter((p) => !layoutsListingExcludedSlugs.has(p.slug)),
+    []
+  );
 
   const filtered = useMemo(() => {
     if (activeFilter === "all") return orderedProjects;

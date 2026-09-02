@@ -24,7 +24,7 @@ export function SiteVisitCTA() {
       <div className="container-main absolute inset-0 flex items-center">
         <FadeIn>
           <div className="max-w-xl rounded-2xl border border-white/10 bg-dark/15 p-6 backdrop-blur-[3px] md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
-            <p className="label-accent text-brand-cyan">Site Visit</p>
+            <p className="label-upper text-brand-cyan">Site Visit</p>
             <h2 id="site-visit-heading" className="heading-section-light mt-4">
               See It Before You Decide.
             </h2>

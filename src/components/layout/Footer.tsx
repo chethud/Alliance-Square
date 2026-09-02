@@ -15,12 +15,7 @@ const socialLinks = [
 ] as const;
 
 function FooterHeading({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="h-px w-8 shrink-0 bg-brand-cyan" aria-hidden="true" />
-      <h3 className="label-upper text-brand-cyan">{children}</h3>
-    </div>
-  );
+  return <h3 className="label-upper text-brand-cyan">{children}</h3>;
 }
 
 function FooterContactItem({

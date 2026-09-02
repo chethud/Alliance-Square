@@ -27,10 +27,7 @@ export function SectionHeader({
 
   return (
     <FadeIn className={cn(isCenter && "text-center", className)}>
-      <div className={cn("flex items-center gap-3", isCenter && "justify-center")}>
-        <span className="h-px w-8 shrink-0 bg-brand-cyan" aria-hidden="true" />
-        <p className="label-upper text-brand-cyan">{label}</p>
-      </div>
+      <p className="label-upper text-brand-cyan">{label}</p>
       <h2
         id={headingId}
         className={cn(

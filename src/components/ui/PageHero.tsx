@@ -42,7 +42,6 @@ export function PageHero({
           className="object-cover object-center hero-image-clarity scale-[1.03]"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/65 to-dark/20" />
         <BackButton
           fallbackHref={fallbackHref}
           label="Go back"
@@ -73,12 +72,7 @@ export function PageHero({
             </nav>
           )}
 
-          {label && (
-            <div className="flex items-center gap-3">
-              <span className="h-px w-8 shrink-0 bg-brand-cyan" aria-hidden="true" />
-              <p className="label-upper text-brand-cyan">{label}</p>
-            </div>
-          )}
+          {label && <p className="label-upper text-brand-cyan">{label}</p>}
           <h1 className={`heading-section-light ${label ? "mt-4" : ""}`}>{title}</h1>
           {description && (
             <p className="mt-4 text-base leading-relaxed text-white/75 md:text-lg">{description}</p>
