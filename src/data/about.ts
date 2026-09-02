@@ -36,15 +36,6 @@ export const aboutServices = [
   },
 ] as const;
 
-export const propertiesInMysoreContent = {
-  title: "Properties in Mysore",
-  intro:
-    "curates and showcases the best selling residential plots, villas and apartments in Mysuru. All the properties are carefully listed, so that the buyers can make an informed & correct decision to invest in Mysuru.",
-  portalUrl: "https://www.propertiesinmysore.com",
-  portalGuide:
-    "Our portal is a comprehensive guide on the real estate scenario in and around Mysore. It further focuses on the current market trends for residential and commercial properties, ongoing projects and also has the 'offered prices' for apartments, office and land, rentals. It also has the rules governing NRI/ FDI investment in real estate, home loans, taxation and legal matters.",
-};
-
 export const allianceSquareAboutContent = {
   title: "Alliance Square",
   intro:

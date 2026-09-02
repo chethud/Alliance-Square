@@ -10,7 +10,6 @@ import {
   aboutBanner,
   aboutServices,
   allianceSquareAboutContent,
-  propertiesInMysoreContent,
 } from "@/data/about";
 
 export const metadata: Metadata = createPageMetadata({
@@ -35,25 +34,7 @@ export default function AboutPage() {
       <section className="section-spacing bg-off-white">
         <div className="container-main">
           <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-14">
-            <div className="space-y-6">
-              <SectionHeader
-                label="Property Portal"
-                title={propertiesInMysoreContent.title}
-              />
-              <p className="text-body">
-                <a
-                  href={propertiesInMysoreContent.portalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-brand-cyan hover:underline"
-                >
-                  Propertiesinmysore.com
-                </a>{" "}
-                {propertiesInMysoreContent.intro}
-              </p>
-              <OfficePhotoCarousel />
-              <p className="text-body">{propertiesInMysoreContent.portalGuide}</p>
-            </div>
+            <OfficePhotoCarousel />
 
             <div className="space-y-6">
               <SectionHeader label="About Us" title={allianceSquareAboutContent.title} />

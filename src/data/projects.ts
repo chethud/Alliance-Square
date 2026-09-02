@@ -46,7 +46,14 @@ export const projects: Project[] = [
     featured: true,
     spotlight: true,
     heroImage: projectImage("uk-square"),
-    gallery: [projectImage("uk-square")],
+    gallery: [
+      projectImage("uk-square"),
+      "/images/projects/uk-square-2.jpg",
+      "/images/projects/uk-square-3.jpg",
+      "/images/projects/uk-square-4.jpg",
+      "/images/projects/uk-square-5.jpg",
+      "/images/projects/uk-square-6.jpg",
+    ],
     listingDescription:
       "UK Square is a premium gated plotted community at the Mysuru–Kushalnagar Highway Exit Junction. With excellent connectivity, peaceful surroundings, and modern infrastructure, it offers the perfect blend of comfortable living and smart investment in one of Mysuru's fastest-growing corridors.",
   },
@@ -97,7 +104,13 @@ export const projects: Project[] = [
     ],
     featured: true,
     heroImage: projectImage("cnm-apex-city"),
-    gallery: [projectImage("cnm-apex-city")],
+    gallery: [
+      projectImage("cnm-apex-city"),
+      "/images/projects/cnm-apex-city-2.jpeg",
+      "/images/projects/cnm-apex-city-3.jpeg",
+      "/images/projects/cnm-apex-city-4.jpeg",
+      "/images/projects/cnm-apex-city-5.jpeg",
+    ],
     listingDescription:
       "CNM Apex City is a premium residential layout on Srirampura Ring Road, Mysuru, offering excellent connectivity and future growth. With essential amenities and a strategic location near key landmarks, it's ideal for both living and smart investment.",
     youtubeShortId: "4mZ_jTHoI1Q",
@@ -138,8 +151,15 @@ export const projects: Project[] = [
       "Landscaped Areas",
     ],
     featured: true,
-    heroImage: projectImage("sridevi-lake-view"),
-    gallery: [projectImage("sridevi-lake-view")],
+    heroImage: "/images/projects/sridevi-lake-view.png",
+    gallery: [
+      "/images/projects/sridevi-lake-view.png",
+      "/images/projects/sridevi-lake-view-2.png",
+      "/images/projects/sridevi-lake-view-3.png",
+      "/images/projects/sridevi-lake-view-4.png",
+      "/images/projects/sridevi-lake-view-5.png",
+      "/images/projects/sridevi-lake-view-6.png",
+    ],
     listingDescription:
       "Sridevi Lake View is a premium residential layout with DTCP approval. It is located off T Narasipura Road and offers all major facilities.",
     youtubeShortId: "_PGeDN80qCg",
@@ -223,7 +243,12 @@ export const projects: Project[] = [
     ],
     featured: true,
     heroImage: projectImage("alliance-serene-phase-2"),
-    gallery: [projectImage("alliance-serene-phase-2")],
+    gallery: [
+      "/images/projects/alliance-serene-phase-2-4.jpg",
+      "/images/projects/alliance-serene-phase-2-1.jpg",
+      "/images/projects/alliance-serene-phase-2-2.jpg",
+      "/images/projects/alliance-serene-phase-2-3.jpg",
+    ],
     listingDescription:
       "Our premium residential layout in Mysore, located just off Bannur road, is one of the best locations in Mysuru to build your dream home. It is just 2 mins away from the ring road with premium educational institutions, hospitals, resorts, hotels & convention centers located very close by.",
   },
@@ -275,7 +300,13 @@ export const projects: Project[] = [
     ],
     featured: true,
     heroImage: projectImage("adhya-enclave"),
-    gallery: [projectImage("adhya-enclave")],
+    gallery: [
+      projectImage("adhya-enclave"),
+      "/images/projects/adhya-enclave-2.jpg",
+      "/images/projects/adhya-enclave-4.jpg",
+      "/images/projects/adhya-enclave-5.jpg",
+      "/images/projects/adhya-enclave-6.jpg",
+    ],
     listingDescription:
       "Adhya Enclave is a fully developed premium residential layout in Nanjangud, just 20 minutes from Mysore. Spanning 3 acres on Chamalapura Main Road, this MUDA-approved gated community offers plots and row houses with modern amenities, green spaces, and excellent connectivity.",
   },
@@ -357,7 +388,14 @@ export const projects: Project[] = [
     ],
     featured: true,
     heroImage: projectImage("jeevan-vihar"),
-    gallery: [projectImage("jeevan-vihar")],
+    gallery: [
+      "/images/projects/jeevan-vihar-2.jpg",
+      "/images/projects/jeevan-vihar-3.jpg",
+      "/images/projects/jeevan-vihar-4.jpg",
+      "/images/projects/jeevan-vihar-5.jpg",
+      "/images/projects/jeevan-vihar-6.jpg",
+      "/images/projects/jeevan-vihar-7.jpg",
+    ],
     listingDescription:
       "Jeevan Vihar is a MUDA-approved layout featuring sites with various dimensions, including 30×40 and 30×50, available for immediate registration.",
   },
