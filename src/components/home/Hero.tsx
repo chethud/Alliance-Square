@@ -54,7 +54,7 @@ export function Hero() {
   const userPrefersMutedRef = useRef(false);
   const mutedFallbackAppliedRef = useRef(false);
   const isPlayingRef = useRef(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(true);
@@ -104,7 +104,7 @@ export function Hero() {
       host: "https://www.youtube-nocookie.com",
       playerVars: {
         autoplay: 1,
-        mute: 0,
+        mute: 1,
         controls: 0,
         rel: 0,
         modestbranding: 1,
@@ -121,11 +121,17 @@ export function Hero() {
         onReady: (event) => {
           setIsReady(true);
 
+          // Start muted so mobile browsers allow autoplay, then try sound.
           if (isInViewRef.current) {
-            startPlayback(event.target, true);
+            startPlayback(event.target, false);
+            window.setTimeout(() => {
+              if (!userPrefersMutedRef.current && playerRef.current) {
+                tryEnableSound(playerRef.current);
+              }
+            }, 400);
           }
 
-          // Browsers often block unmuted autoplay — fall back to muted, then retry sound.
+          // If playback still hasn't started, force muted play.
           window.setTimeout(() => {
             const player = playerRef.current;
             if (
@@ -141,8 +147,7 @@ export function Hero() {
             player.mute();
             player.playVideo();
             syncMuteState(player);
-            tryEnableSound(player);
-          }, 1800);
+          }, 1200);
         },
         onStateChange: (event) => {
           const YT = window.YT;
@@ -250,6 +255,15 @@ export function Hero() {
       boot();
     };
 
+    // Ensure the IFrame API script exists (layout Script can be delayed/blocked).
+    if (!document.getElementById("youtube-iframe-api")) {
+      const script = document.createElement("script");
+      script.id = "youtube-iframe-api";
+      script.src = "https://www.youtube.com/iframe_api";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
     pollId = window.setInterval(() => {
       if (window.YT?.Player) {
         window.clearInterval(pollId);
@@ -318,7 +332,7 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative mt-[var(--site-header-height)] h-[calc(100dvh-var(--site-header-height))] min-h-[420px] w-full overflow-hidden bg-dark md:min-h-[480px]"
+      className="relative mt-[var(--site-header-height,4.0625rem)] h-[calc(100dvh-var(--site-header-height,4.0625rem))] min-h-[420px] w-full overflow-hidden bg-dark md:min-h-[480px]"
       aria-label="Hero"
     >
       <div className="absolute inset-0">
@@ -326,15 +340,14 @@ export function Hero() {
           ref={shellRef}
           className={cn(
             "hero-video-shell absolute inset-0 overflow-hidden transition-opacity duration-700",
-            !isPlaying && "opacity-0",
+            !isReady && "opacity-0",
             !isInView && "pointer-events-none opacity-0"
           )}
           aria-hidden="true"
         >
-          <div
-            ref={playerContainerRef}
-            className="hero-video-player"
-          />
+          <div className="hero-video-frame">
+            <div ref={playerContainerRef} id="hero-youtube-player" />
+          </div>
         </div>
 
         {/* Blocks all taps from reaching the YouTube iframe */}

@@ -167,28 +167,41 @@
   }
 
   .hero-video-shell {
+    position: absolute;
+    inset: 0;
     overflow: hidden;
   }
 
-  .hero-video-player {
+  /* 16:9 cover relative to the hero box (not the full viewport / header).
+     Scale past the container so overflow:hidden crops YouTube chrome
+     (logo, “More videos”, title bar) at the edges. */
+  .hero-video-frame {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 100vw;
-    height: 56.25vw;
-    min-height: 100%;
-    min-width: 177.78dvh;
-    transform: translate(-50%, -50%);
+    height: 100%;
+    width: auto;
+    aspect-ratio: 16 / 9;
+    min-width: 100%;
+    transform: translate(-50%, -50%) scale(1.28);
   }
 
-  .hero-video-player > div,
-  .hero-video-player iframe {
+  @media (max-width: 767px) {
+    .hero-video-frame {
+      transform: translate(-50%, -50%) scale(1.38);
+    }
+  }
+
+  .hero-video-frame iframe,
+  .hero-video-frame > div {
+    display: block;
     width: 100% !important;
     height: 100% !important;
+    border: 0 !important;
   }
 
-  .hero-video-player,
-  .hero-video-player iframe {
+  .hero-video-frame,
+  .hero-video-frame iframe {
     pointer-events: none !important;
   }
 

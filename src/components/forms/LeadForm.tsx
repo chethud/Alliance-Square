@@ -32,8 +32,8 @@ export function LeadForm() {
                 <p className="mt-2 text-white/70">Our team will contact you shortly.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="surface-card space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
+              <form onSubmit={handleSubmit} className="surface-card space-y-3 p-4 md:p-5">
+                <div className="grid gap-3 md:grid-cols-2">
                   <input id="name" name="name" required placeholder="Name *" className="input-field" />
                   <input
                     id="phone"
@@ -45,7 +45,7 @@ export function LeadForm() {
                   />
                 </div>
                 <input id="email" name="email" type="email" placeholder="Email" className="input-field" />
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-3 md:grid-cols-2">
                   <select id="interested" name="interested" className="input-field">
                     <option value="">Interested In</option>
                     {projects.map((p) => (
@@ -66,11 +66,11 @@ export function LeadForm() {
                 <textarea
                   id="message"
                   name="message"
-                  rows={4}
+                  rows={2}
                   placeholder="Message"
                   className="input-field resize-none"
                 />
-                <div className="flex flex-wrap gap-4 pt-2">
+                <div className="flex flex-wrap gap-3">
                   <button type="submit" className="btn-primary">
                     Request a Callback
                   </button>
