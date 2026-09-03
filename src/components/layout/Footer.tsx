@@ -123,7 +123,16 @@ export function Footer() {
         <div className="divider-gradient mt-8 md:mt-10" />
         <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <p className="text-sm text-cool-gray">
-            © {new Date().getFullYear()} Alliance Square Properties. All Rights Reserved.
+            © {new Date().getFullYear()} Alliance Square Properties. All Rights Reserved. Designed by{" "}
+            <a
+              href="https://admarkdigitals.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-brand-cyan"
+            >
+              Admark Digitals
+            </a>
+            .
           </p>
           <div className="flex flex-wrap gap-6">
             <Link href="/privacy" className="text-sm text-cool-gray transition-colors hover:text-brand-cyan">

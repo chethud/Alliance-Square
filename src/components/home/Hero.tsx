@@ -52,8 +52,9 @@ export function Hero() {
   const playerRef = useRef<YTPlayer | null>(null);
   const isInViewRef = useRef(true);
   const userPrefersMutedRef = useRef(false);
-  const hasUserInteractedRef = useRef(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const mutedFallbackAppliedRef = useRef(false);
+  const isPlayingRef = useRef(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(true);
@@ -71,22 +72,29 @@ export function Hero() {
     [syncMuteState]
   );
 
+  const startPlayback = useCallback(
+    (player: YTPlayer, preferSound: boolean) => {
+      if (preferSound && !userPrefersMutedRef.current) {
+        player.unMute();
+      } else {
+        player.mute();
+      }
+      player.playVideo();
+      syncMuteState(player);
+    },
+    [syncMuteState]
+  );
+
   const resumeHeroPlayback = useCallback(
     (player: YTPlayer) => {
       player.playVideo();
-      if (hasUserInteractedRef.current) {
+      if (!userPrefersMutedRef.current) {
         tryEnableSound(player);
       }
+      syncMuteState(player);
     },
-    [tryEnableSound]
+    [syncMuteState, tryEnableSound]
   );
-
-  const handleUserEngage = useCallback(() => {
-    hasUserInteractedRef.current = true;
-    const player = playerRef.current;
-    if (!player || !isInViewRef.current) return;
-    resumeHeroPlayback(player);
-  }, [resumeHeroPlayback]);
 
   const initPlayer = useCallback(() => {
     if (!playerContainerRef.current || playerRef.current || !window.YT?.Player) return;
@@ -96,7 +104,7 @@ export function Hero() {
       host: "https://www.youtube-nocookie.com",
       playerVars: {
         autoplay: 1,
-        mute: 1,
+        mute: 0,
         controls: 0,
         rel: 0,
         modestbranding: 1,
@@ -111,9 +119,30 @@ export function Hero() {
       },
       events: {
         onReady: (event) => {
-          event.target.mute();
-          event.target.playVideo();
           setIsReady(true);
+
+          if (isInViewRef.current) {
+            startPlayback(event.target, true);
+          }
+
+          // Browsers often block unmuted autoplay — fall back to muted, then retry sound.
+          window.setTimeout(() => {
+            const player = playerRef.current;
+            if (
+              !player ||
+              !isInViewRef.current ||
+              isPlayingRef.current ||
+              mutedFallbackAppliedRef.current
+            ) {
+              return;
+            }
+
+            mutedFallbackAppliedRef.current = true;
+            player.mute();
+            player.playVideo();
+            syncMuteState(player);
+            tryEnableSound(player);
+          }, 1800);
         },
         onStateChange: (event) => {
           const YT = window.YT;
@@ -123,7 +152,12 @@ export function Hero() {
             event.data === YT.PlayerState.PLAYING ||
             event.data === YT.PlayerState.BUFFERING
           ) {
+            isPlayingRef.current = true;
             setIsPlaying(true);
+          }
+
+          if (event.data === YT.PlayerState.PLAYING) {
+            tryEnableSound(event.target);
           }
 
           if (
@@ -131,6 +165,7 @@ export function Hero() {
             event.data === YT.PlayerState.UNSTARTED ||
             event.data === YT.PlayerState.CUED
           ) {
+            isPlayingRef.current = false;
             setIsPlaying(false);
           }
 
@@ -145,18 +180,42 @@ export function Hero() {
 
           if (event.data === YT.PlayerState.ENDED && isInViewRef.current) {
             event.target.seekTo(0, true);
-            event.target.playVideo();
+            startPlayback(event.target, !userPrefersMutedRef.current);
           }
         },
       },
     });
-  }, []);
+  }, [startPlayback, syncMuteState, tryEnableSound]);
+
+  useEffect(() => {
+    if (!isPlaying || !isInViewRef.current) return;
+
+    const player = playerRef.current;
+    if (!player || userPrefersMutedRef.current) return;
+
+    const delays = [0, 120, 350, 700, 1200];
+    const timers = delays.map((delay) =>
+      window.setTimeout(() => {
+        if (!playerRef.current || userPrefersMutedRef.current) return;
+        tryEnableSound(playerRef.current);
+        playerRef.current.playVideo();
+      }, delay)
+    );
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [isPlaying, tryEnableSound]);
 
   useEffect(() => {
     if (!isReady) return;
 
     const onFirstInteraction = () => {
-      handleUserEngage();
+      const player = playerRef.current;
+      if (player && isInViewRef.current) {
+        tryEnableSound(player);
+        player.playVideo();
+      }
     };
 
     window.addEventListener("pointerdown", onFirstInteraction, { once: true });
@@ -168,7 +227,7 @@ export function Hero() {
       window.removeEventListener("keydown", onFirstInteraction);
       window.removeEventListener("touchstart", onFirstInteraction);
     };
-  }, [isReady, handleUserEngage]);
+  }, [isReady, tryEnableSound]);
 
   useEffect(() => {
     if (playerRef.current) return;
@@ -223,8 +282,7 @@ export function Hero() {
         } else {
           shellRef.current?.classList.add("opacity-0");
           player.pauseVideo();
-          player.mute();
-          syncMuteState(player);
+          isPlayingRef.current = false;
           setIsPlaying(false);
         }
       },
@@ -233,7 +291,7 @@ export function Hero() {
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
-  }, [isReady, resumeHeroPlayback, syncMuteState]);
+  }, [isReady, resumeHeroPlayback]);
 
   useEffect(() => {
     return () => {
@@ -248,7 +306,6 @@ export function Hero() {
 
     if (player.isMuted()) {
       userPrefersMutedRef.current = false;
-      hasUserInteractedRef.current = true;
       player.unMute();
       setIsMuted(false);
     } else {
@@ -286,7 +343,11 @@ export function Hero() {
           aria-hidden="true"
           onPointerDown={(event) => {
             event.preventDefault();
-            handleUserEngage();
+            const player = playerRef.current;
+            if (player) {
+              tryEnableSound(player);
+              player.playVideo();
+            }
           }}
         />
       </div>
