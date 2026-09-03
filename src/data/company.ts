@@ -1,4 +1,5 @@
 import type { CompanyStats, ContactInfo, WhyAllianceFeature, ApprovalStep } from "@/types";
+import site from "@/content/site.json";
 
 export const company = {
   name: "Alliance Square Properties",
@@ -19,12 +20,8 @@ export const company = {
     "is a pioneer in the real estate industry in Mysuru. It offers you the best investment opportunities & inspires you to live life to the fullest. Alliance Square Apartments, Layouts & Villas are meticulously designed with unbound convenience & the best of amenities and are an effortless blend of modernity and elegance.",
 };
 
-export const stats: CompanyStats = {
-  years: 20,
-  layouts: 15,
-  customers: 4000,
-  customerFocused: "100%",
-};
+export const stats: CompanyStats = site.stats;
+export const heroVideoId = site.heroVideoId;
 
 export const contact: ContactInfo = {
   corporateOffice: {

@@ -14,6 +14,9 @@ import { ProjectSchema } from "@/components/seo/StructuredData";
 import { getProjectBySlug, getRelatedProjects, projects, layoutsBrochureUrl } from "@/data/projects";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
-import { Navbar } from "@/components/layout/Navbar";
-import { SafeWheelsBranding } from "@/components/layout/SafeWheelsBranding";
-import { Footer } from "@/components/layout/Footer";
-import { FloatingActions } from "@/components/layout/FloatingActions";
 import { OrganizationSchema } from "@/components/seo/StructuredData";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { rootMetadata } from "@/lib/seo/metadata";
 
 import "./globals.css";
@@ -26,11 +23,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         <OrganizationSchema />
-        <Navbar />
-        <main>{children}</main>
-        <SafeWheelsBranding />
-        <Footer />
-        <FloatingActions />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

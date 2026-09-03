@@ -12,6 +12,8 @@ import { BlogGrid } from "@/components/home/BlogGrid";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { WebSiteSchema } from "@/components/seo/StructuredData";
 
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   return (
     <>

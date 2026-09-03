@@ -59,6 +59,14 @@ export interface BlogPost {
   category: string;
   date: string;
   image: string;
+  body?: string[];
+}
+
+export type CmsMapStatus = "running" | "completed";
+
+export interface CmsProject extends Project {
+  mapStatus?: CmsMapStatus;
+  showOnLayouts?: boolean;
 }
 
 export interface FAQ {

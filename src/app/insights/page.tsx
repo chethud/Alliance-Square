@@ -9,6 +9,8 @@ import { FadeIn } from "@/components/ui/Motion";
 import { blogPosts } from "@/data/blogs";
 import { insightsHero } from "@/data/images";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = createPageMetadata({
   title: "Real Estate Insights & Investment Guides for Mysuru",
   description:

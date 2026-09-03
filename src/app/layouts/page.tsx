@@ -5,6 +5,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { LayoutListing } from "@/components/layouts/LayoutListing";
 import { layoutsBanner } from "@/data/images";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = createPageMetadata({
   title: "Residential Layouts & Plots for Sale in Mysuru",
   description:

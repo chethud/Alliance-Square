@@ -5,6 +5,8 @@ import { TestimonialsPageSchema } from "@/components/seo/StructuredData";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { heroSliderImages } from "@/data/images";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = createPageMetadata({
   title: "Customer Testimonials | Alliance Square Properties",
   description: "Customer testimonials and reviews for Alliance Square Properties, Mysuru.",

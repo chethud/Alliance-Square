@@ -1,7 +1,8 @@
-import type { Project, MapMarker } from "@/types";
+import type { Project, MapMarker, CmsProject } from "@/types";
 import { projectImage } from "./images";
+import cmsProjectsJson from "@/content/cms-projects.json";
 
-export const projects: Project[] = [
+const projectsSeed: Project[] = [
   {
     id: "uk-square",
     slug: "uk-square",
@@ -445,6 +446,78 @@ export const projects: Project[] = [
   },
 ];
 
+function toProject(item: CmsProject): Project {
+  const { mapStatus: _mapStatus, showOnLayouts: _showOnLayouts, ...project } = item;
+  return project;
+}
+
+export const cmsProjects = cmsProjectsJson as CmsProject[];
+export const catalogProjects: Project[] = projectsSeed;
+
+/** Order used on alliancesquare.com/layouts listing page */
+export const catalogLayoutsPageOrder = [
+  "uk-square",
+  "cnm-apex-city",
+  "sridevi-lake-view",
+  "jeevan-vihar-phase-2",
+  "alliance-serene-phase-2",
+  "adhya-enclave",
+  "dr-daya-nagar",
+  "jeevan-vihar",
+  "dhatri-square",
+] as const;
+
+export const catalogRunningMapMarkerOrder = [
+  "uk-square",
+  "cnm-apex-city",
+  "sridevi-lake-view",
+  "jeevan-vihar-phase-2",
+  "adhya-enclave",
+] as const;
+
+export const catalogCompletedMapMarkerOrder = [
+  "alliance-serene-phase-2",
+  "dr-daya-nagar",
+  "jeevan-vihar",
+  "dhatri-square",
+] as const;
+
+export function catalogProjectsAsCms(): CmsProject[] {
+  const running = new Set<string>(catalogRunningMapMarkerOrder);
+  return catalogProjects.map((project) => ({
+    ...project,
+    mapStatus: running.has(project.slug) ? "running" : "completed",
+    showOnLayouts: true,
+  }));
+}
+
+export function mergeCmsLayouts(overrides: CmsProject[]): CmsProject[] {
+  const bySlug = new Map(
+    overrides.filter((project) => project.slug).map((project) => [project.slug, project])
+  );
+  const catalog = catalogProjectsAsCms();
+  const catalogSlugs = new Set(catalog.map((project) => project.slug));
+  return [
+    ...catalog.map((project) => bySlug.get(project.slug) ?? project),
+    ...overrides.filter((project) => project.slug && !catalogSlugs.has(project.slug)),
+  ];
+}
+
+export function mergeProjects(catalog: Project[], overrides: CmsProject[]): Project[] {
+  const bySlug = new Map(
+    overrides.filter((project) => project.slug).map((project) => [project.slug, toProject(project)])
+  );
+  const catalogSlugs = new Set(catalog.map((project) => project.slug));
+  return [
+    ...catalog.map((project) => bySlug.get(project.slug) ?? project),
+    ...overrides
+      .filter((project) => project.slug && !catalogSlugs.has(project.slug))
+      .map(toProject),
+  ];
+}
+
+export const projects: Project[] = mergeProjects(catalogProjects, cmsProjects);
+
 export const mapMarkers: MapMarker[] = projects
   .filter((p) => p.location.coordinates)
   .map((p) => ({
@@ -466,7 +539,12 @@ export function getFeaturedProject(): Project {
 }
 
 export function getSpotlightProjects(): Project[] {
-  return getProjectsInOrder(runningMapMarkerOrder);
+  return getProjectsInOrder([
+    "uk-square",
+    "cnm-apex-city",
+    "sridevi-lake-view",
+    "jeevan-vihar-phase-2",
+  ]);
 }
 
 export function getRelatedProjects(currentSlug: string, limit = 3): Project[] {
@@ -482,24 +560,51 @@ export const filterOptions: { value: import("@/types").ProjectFilter; label: str
   { value: "investment", label: "Investment" },
 ];
 
-/** Order used on alliancesquare.com/layouts listing page */
+const cmsBySlug = new Map(cmsProjects.map((project) => [project.slug, project]));
+const catalogSlugSet = new Set(catalogProjects.map((project) => project.slug));
+
+function shownOnLayouts(slug: string) {
+  const override = cmsBySlug.get(slug);
+  return override ? override.showOnLayouts !== false : true;
+}
+
+function mapStatusFor(slug: string): "running" | "completed" {
+  const override = cmsBySlug.get(slug);
+  if (override?.mapStatus) return override.mapStatus;
+  if ((catalogRunningMapMarkerOrder as readonly string[]).includes(slug)) return "running";
+  return "completed";
+}
+
+const featuredCmsSlugs = cmsProjects
+  .filter((project) => project.featured && shownOnLayouts(project.slug))
+  .map((project) => project.slug);
+
+const newCmsSlugs = cmsProjects
+  .filter((project) => !catalogSlugSet.has(project.slug) && shownOnLayouts(project.slug))
+  .map((project) => project.slug);
+
 export const layoutsPageOrder = [
-  "uk-square",
-  "cnm-apex-city",
-  "sridevi-lake-view",
-  "jeevan-vihar-phase-2",
-  "alliance-serene-phase-2",
-  "adhya-enclave",
-  "dr-daya-nagar",
-  "jeevan-vihar",
-  "dhatri-square",
-] as const;
+  ...featuredCmsSlugs,
+  ...catalogLayoutsPageOrder.filter(
+    (slug) => shownOnLayouts(slug) && !featuredCmsSlugs.includes(slug)
+  ),
+  ...newCmsSlugs.filter((slug) => !featuredCmsSlugs.includes(slug)),
+];
 
-/** First 4 on layouts page — currently running on the map sidebar */
-export const runningMapMarkerOrder = layoutsPageOrder.slice(0, 4);
+const allMapSlugs = [
+  ...catalogRunningMapMarkerOrder,
+  ...catalogCompletedMapMarkerOrder,
+  ...cmsProjects.map((project) => project.slug),
+];
+const uniqueMapSlugs = [...new Set(allMapSlugs)];
 
-/** Remaining projects — completed on the map sidebar */
-export const completedMapMarkerOrder = layoutsPageOrder.slice(4);
+export const runningMapMarkerOrder = uniqueMapSlugs.filter(
+  (slug) => mapStatusFor(slug) === "running"
+);
+
+export const completedMapMarkerOrder = uniqueMapSlugs.filter(
+  (slug) => mapStatusFor(slug) === "completed"
+);
 
 export function getGroupedMapMarkers(): {
   running: MapMarker[];

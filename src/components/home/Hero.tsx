@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { heroVideoId } from "@/data/company";
 
-const HERO_VIDEO_ID = "KWV_2LWONlw";
+const HERO_VIDEO_ID = heroVideoId;
 
 interface YTPlayer {
   mute: () => void;

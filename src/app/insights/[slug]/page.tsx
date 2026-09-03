@@ -10,6 +10,9 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { blogPosts, getBlogBySlug } from "@/data/blogs";
 import { formatDate } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -70,15 +73,15 @@ export default async function InsightPage({ params }: PageProps) {
 
             <FadeIn delay={0.1}>
               <div className="mt-6 space-y-6 text-body">
-                <p>
-                  Mysuru continues to emerge as one of South India&apos;s most compelling real estate destinations.
-                  With improving connectivity, expanding infrastructure, and a quality of life that rivals metro cities,
-                  the city presents thoughtful investment opportunities for homebuyers and investors alike.
-                </p>
-                <p>
-                  At Alliance Square Properties, we help you navigate these opportunities with verified documentation,
-                  transparent processes, and expert guidance from site visit to registration.
-                </p>
+                {(post.body && post.body.length > 0
+                  ? post.body
+                  : [
+                      "Mysuru continues to emerge as one of South India's most compelling real estate destinations. With improving connectivity, expanding infrastructure, and a quality of life that rivals metro cities, the city presents thoughtful investment opportunities for homebuyers and investors alike.",
+                      "At Alliance Square Properties, we help you navigate these opportunities with verified documentation, transparent processes, and expert guidance from site visit to registration.",
+                    ]
+                ).map((paragraph) => (
+                  <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+                ))}
               </div>
             </FadeIn>
 

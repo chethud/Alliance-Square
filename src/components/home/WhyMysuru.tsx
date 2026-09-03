@@ -10,7 +10,6 @@ import type { GrowthDriver } from "@/types";
 import { cn } from "@/lib/utils";
 
 const TOTAL = growthDrivers.length;
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 function formatIndex(index: number) {
   return String(index + 1).padStart(2, "0");
@@ -32,17 +31,14 @@ function CategoryBadge({ label, active }: { label: string; active: boolean }) {
   );
 }
 
-function StoryVisual({ driver, active }: { driver: GrowthDriver; active: boolean }) {
+function StoryVisual({ driver }: { driver: GrowthDriver }) {
   const image =
     growthStoryImages[driver.id as keyof typeof growthStoryImages] ??
     growthStoryImages.expressway;
 
   return (
     <div
-      className={cn(
-        "relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#E8ECEF]",
-        active ? "opacity-100" : "opacity-70"
-      )}
+      className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#E8ECEF]"
       aria-hidden="true"
     >
       <Image
@@ -207,19 +203,14 @@ function GrowthStory({
       animate={{ opacity: 1, y: 0 }}
       className="relative flex min-w-0 scroll-mt-32 flex-col border-b border-charcoal/[0.08] bg-[#F7F9FA] md:odd:border-r md:odd:border-charcoal/[0.08] md:[&:nth-last-child(-n+2)]:border-b-0"
     >
-      <StoryVisual driver={driver} active={isInView} />
+      <StoryVisual driver={driver} />
 
       <div className="flex flex-col px-5 py-6 md:px-6 lg:pl-8 lg:pr-6">
         <div className="flex flex-wrap items-center gap-3">
           <CategoryBadge label={driver.label.toUpperCase()} active={isInView} />
         </div>
 
-        <h3
-          className={cn(
-            "mt-4 text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-charcoal transition-opacity duration-300 md:text-[24px] lg:text-[26px]",
-            isInView ? "opacity-100" : "opacity-80"
-          )}
-        >
+        <h3 className="mt-4 text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-charcoal md:text-[24px] lg:text-[26px]">
           {titleParts.map((part, i) => (
             <span key={part} className="block">
               {part}
@@ -231,13 +222,7 @@ function GrowthStory({
           {driver.description}
         </p>
 
-        <motion.div
-          initial={false}
-          animate={{ scaleX: isInView ? 1 : 0 }}
-          transition={{ duration: 0.5, delay: 0.06, ease: EASE }}
-          className="mt-5 h-px max-w-[200px] origin-left bg-charcoal/[0.12]"
-          aria-hidden="true"
-        />
+        <div className="mt-5 h-px max-w-[200px] bg-charcoal/[0.12]" aria-hidden="true" />
       </div>
     </motion.article>
   );
