@@ -17,6 +17,7 @@ import {
   inputClass,
   labelClass,
 } from "@/components/admin/cms-ui";
+import { parseYouTubeId } from "@/lib/cms/youtube";
 
 type Tab = "insights" | "testimonials" | "layouts" | "site";
 
@@ -386,10 +387,15 @@ export function AdminDashboard({ initial }: { initial: CmsContent }) {
                     )
                   }
                   onFile={async (file) => {
-                    const url = await uploadImage(file, "blogs", insight.slug || insight.title || "insight");
-                    setInsights((current) =>
-                      current.map((item, index) => (index === insightIndex ? { ...item, image: url } : item))
-                    );
+                    try {
+                      const url = await uploadImage(file, "blogs", insight.slug || insight.title || "insight");
+                      setInsights((current) =>
+                        current.map((item, index) => (index === insightIndex ? { ...item, image: url } : item))
+                      );
+                      setStatus("Image uploaded. Save insights to publish.");
+                    } catch (error) {
+                      setStatus(error instanceof Error ? error.message : "Upload failed.");
+                    }
                   }}
                 />
               </EditorPane>
@@ -485,12 +491,17 @@ export function AdminDashboard({ initial }: { initial: CmsContent }) {
                     )
                   }
                   onFile={async (file) => {
-                    const url = await uploadImage(file, "testimonials", testimonial.name || "review");
-                    setTestimonials((current) =>
-                      current.map((item, index) =>
-                        index === testimonialIndex ? { ...item, image: url } : item
-                      )
-                    );
+                    try {
+                      const url = await uploadImage(file, "testimonials", testimonial.name || "review");
+                      setTestimonials((current) =>
+                        current.map((item, index) =>
+                          index === testimonialIndex ? { ...item, image: url } : item
+                        )
+                      );
+                      setStatus("Image uploaded. Save testimonials to publish.");
+                    } catch (error) {
+                      setStatus(error instanceof Error ? error.message : "Upload failed.");
+                    }
                   }}
                 />
               </EditorPane>
@@ -530,6 +541,7 @@ export function AdminDashboard({ initial }: { initial: CmsContent }) {
                   onChange={(next) => {
                     setLayouts((current) => current.map((item, index) => (index === layoutIndex ? next : item)));
                   }}
+                  onNotice={setStatus}
                   onSave={() => save("layouts", layouts)}
                   onDelete={() => {
                     const current = layouts[layoutIndex];
@@ -603,19 +615,22 @@ export function AdminDashboard({ initial }: { initial: CmsContent }) {
                   />
                 </Field>
               </div>
-              <Field label="Homepage YouTube URL or video ID">
+              <Field label="Homepage YouTube link">
                 <input
                   className={inputClass}
                   value={site.heroVideoId}
                   onChange={(event) => setSite((current) => ({ ...current, heroVideoId: event.target.value }))}
                   placeholder="https://www.youtube.com/watch?v=..."
                 />
+                <p className="mt-1.5 text-xs text-cool-gray">
+                  Paste the normal YouTube link — watch, live, Shorts, share, or embed.
+                </p>
               </Field>
-              {site.heroVideoId ? (
+              {parseYouTubeId(site.heroVideoId) ? (
                 <div className="aspect-video w-full overflow-hidden border border-light-gray bg-charcoal">
                   <iframe
                     title="Homepage video preview"
-                    src={`https://www.youtube.com/embed/${site.heroVideoId}`}
+                    src={`https://www.youtube.com/embed/${parseYouTubeId(site.heroVideoId)}`}
                     className="h-full w-full"
                     allow="encrypted-media"
                   />
@@ -634,6 +649,7 @@ function LayoutEditor({
   saving,
   isCatalog,
   onChange,
+  onNotice,
   onSave,
   onDelete,
 }: {
@@ -641,6 +657,7 @@ function LayoutEditor({
   saving: boolean;
   isCatalog: boolean;
   onChange: (layout: CmsProject) => void;
+  onNotice: (message: string) => void;
   onSave: () => void;
   onDelete: () => void;
 }) {
@@ -802,12 +819,16 @@ function LayoutEditor({
           onChange={(event) => onChange({ ...layout, highlights: splitList(event.target.value) })}
         />
       </Field>
-      <Field label="YouTube Shorts URL or ID">
+      <Field label="YouTube Shorts link">
         <input
           className={inputClass}
           value={layout.youtubeShortId ?? ""}
           onChange={(event) => onChange({ ...layout, youtubeShortId: event.target.value })}
+          placeholder="https://www.youtube.com/shorts/..."
         />
+        <p className="mt-1.5 text-xs text-cool-gray">
+          Paste the normal Shorts or watch link. Embed links also work.
+        </p>
       </Field>
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="Map status">
@@ -835,12 +856,17 @@ function LayoutEditor({
         value={layout.heroImage}
         onPathChange={(value) => onChange({ ...layout, heroImage: value })}
         onFile={async (file) => {
-          const url = await uploadImage(file, "projects", layout.name || "layout");
-          onChange({
-            ...layout,
-            heroImage: url,
-            gallery: layout.gallery.includes(url) ? layout.gallery : [url, ...layout.gallery],
-          });
+          try {
+            const url = await uploadImage(file, "projects", layout.name || "layout");
+            onChange({
+              ...layout,
+              heroImage: url,
+              gallery: layout.gallery.includes(url) ? layout.gallery : [url, ...layout.gallery],
+            });
+            onNotice("Image uploaded. Save layouts to publish.");
+          } catch (error) {
+            onNotice(error instanceof Error ? error.message : "Upload failed.");
+          }
         }}
       />
     </EditorPane>

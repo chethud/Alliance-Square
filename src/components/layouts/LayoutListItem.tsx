@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { getProjectMapStatus } from "@/data/projects";
 import type { Project } from "@/types";
 
 interface LayoutListItemProps {
@@ -8,6 +9,8 @@ interface LayoutListItemProps {
 }
 
 export function LayoutListItem({ project }: LayoutListItemProps) {
+  const isCompleted = getProjectMapStatus(project.slug) === "completed";
+
   return (
     <article className="premium-card group flex h-full min-h-[420px] flex-col overflow-hidden md:min-h-[460px]">
       <Link
@@ -21,6 +24,21 @@ export function LayoutListItem({ project }: LayoutListItemProps) {
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
+        {isCompleted ? (
+          <span
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+            aria-label="Completed project"
+          >
+            <Image
+              src="/images/ui/completed-seal.png"
+              alt=""
+              width={180}
+              height={180}
+              unoptimized
+              className="h-[44%] w-[44%] max-h-[170px] max-w-[170px] object-contain drop-shadow-[0_6px_14px_rgba(11,13,15,0.25)]"
+            />
+          </span>
+        ) : null}
       </Link>
 
       <div className="flex min-h-0 flex-[3] flex-col justify-center p-5 md:p-6">

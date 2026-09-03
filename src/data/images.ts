@@ -66,7 +66,7 @@ export const growthStoryImages = {
   "it-sector": "/images/growth/it-sector.jpg",
   logistics: "/images/growth/logistics.jpg",
   tourism: blogImages["hospitality-hub"],
-  education: blogImages["rv-university"],
+  education: "/images/growth/education.png",
 } as const;
 
 export const whyInvestIcons = [

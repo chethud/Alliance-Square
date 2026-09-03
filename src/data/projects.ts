@@ -460,8 +460,8 @@ export const catalogLayoutsPageOrder = [
   "cnm-apex-city",
   "sridevi-lake-view",
   "jeevan-vihar-phase-2",
-  "alliance-serene-phase-2",
   "adhya-enclave",
+  "alliance-serene-phase-2",
   "dr-daya-nagar",
   "jeevan-vihar",
   "dhatri-square",
@@ -573,6 +573,10 @@ function mapStatusFor(slug: string): "running" | "completed" {
   if (override?.mapStatus) return override.mapStatus;
   if ((catalogRunningMapMarkerOrder as readonly string[]).includes(slug)) return "running";
   return "completed";
+}
+
+export function getProjectMapStatus(slug: string): "running" | "completed" {
+  return mapStatusFor(slug);
 }
 
 const featuredCmsSlugs = cmsProjects

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { isAdminSession } from "@/lib/cms/auth";
 import { loadCmsContent, type SiteContent } from "@/lib/cms/content";
-import { writeJson, parseYouTubeId, priceLabelFromSqft, slugify } from "@/lib/cms/fs";
+import { writeJson, priceLabelFromSqft, slugify } from "@/lib/cms/fs";
+import { parseYouTubeId } from "@/lib/cms/youtube";
 import type { BlogPost, CmsProject, CompanyStats } from "@/types";
 
 export async function GET() {
