@@ -13,7 +13,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="premium-card group relative block h-full min-h-[420px] overflow-hidden"
+      className="premium-card group relative block h-full min-h-[300px] overflow-hidden md:min-h-[420px]"
     >
       <div className="absolute inset-0">
         <Image
@@ -35,7 +35,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         ))}
       </div>
 
-      <div className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 opacity-0 shadow-card transition-all duration-300 group-hover:opacity-100">
+      <div className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 opacity-100 shadow-card transition-all duration-300 md:opacity-0 md:group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-charcoal" />
       </div>
 

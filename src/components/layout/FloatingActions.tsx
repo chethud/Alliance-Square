@@ -10,7 +10,7 @@ export function FloatingActions() {
 
   return (
     <div
-      className="fixed bottom-6 right-5 z-40 flex flex-col items-end gap-3 sm:right-6"
+      className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-5 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6"
       aria-label="Quick contact actions"
     >
       <div

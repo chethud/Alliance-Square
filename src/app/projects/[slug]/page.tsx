@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: PageProps) {
     <>
       <ProjectSchema project={project} />
       <section className="relative overflow-hidden">
-        <div className="relative aspect-[21/9] min-h-[380px]">
+        <div className="relative aspect-[21/9] min-h-[280px] md:min-h-[360px] lg:min-h-[420px]">
           <Image
             src={project.heroImage}
             alt={project.name}
@@ -62,30 +62,32 @@ export default async function ProjectPage({ params }: PageProps) {
           <BackButton
             fallbackHref="/layouts"
             label="Back to layouts"
-            className="absolute left-4 top-24 z-10 md:left-6 md:top-28"
+            className="absolute left-4 top-20 z-10 md:left-6 md:top-24"
           />
         </div>
 
-        <div className="container-main relative -mt-32 pb-8 md:-mt-36 md:pb-10">
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex flex-wrap items-center gap-2 text-sm text-charcoal/70">
-              <li>
-                <Link href="/" className="transition-colors hover:text-charcoal">
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li>
-                <Link href="/layouts" className="transition-colors hover:text-charcoal">
-                  Layouts
-                </Link>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li className="font-medium text-charcoal" aria-current="page">
-                {project.name}
-              </li>
-            </ol>
-          </nav>
+        <div className="container-main relative -mt-24 pb-8 md:-mt-28 md:pb-10">
+          <div className="mb-5 rounded-2xl border border-white/10 bg-dark/40 px-4 py-3 shadow-premium backdrop-blur-xl sm:px-5 md:mb-6">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-2 text-sm text-white/60">
+                <li>
+                  <Link href="/" className="transition-colors hover:text-white">
+                    Home
+                  </Link>
+                </li>
+                <li aria-hidden="true">/</li>
+                <li>
+                  <Link href="/layouts" className="transition-colors hover:text-white">
+                    Layouts
+                  </Link>
+                </li>
+                <li aria-hidden="true">/</li>
+                <li className="font-medium text-white" aria-current="page">
+                  {project.name}
+                </li>
+              </ol>
+            </nav>
+          </div>
 
           <ProjectHeroSection
             name={project.name}

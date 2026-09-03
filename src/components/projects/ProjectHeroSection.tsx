@@ -77,10 +77,10 @@ export function ProjectHeroSection({
       <div className="max-w-3xl lg:col-span-7">
         <div
           ref={cardRef}
-          className="flex min-h-[500px] flex-col rounded-2xl border border-white/10 bg-white/95 p-8 shadow-premium backdrop-blur-xl md:min-h-[540px] md:p-12 lg:min-h-[560px]"
+          className="flex flex-col rounded-2xl border border-white/10 bg-white/95 p-5 shadow-premium backdrop-blur-xl sm:p-6 md:p-10 lg:min-h-[560px] lg:p-12"
         >
           <ApprovalBadge approvals={approvals} />
-          <h1 className="heading-section mt-6">{name}</h1>
+          <h1 className="heading-section mt-4 md:mt-6">{name}</h1>
           <p className="mt-3 flex items-center gap-2 text-cool-gray">
             <MapPin className="h-4 w-4 text-brand-cyan" aria-hidden="true" />
             {locationArea}, {locationCity}
@@ -104,7 +104,7 @@ export function ProjectHeroSection({
             href={brochureUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary mt-8 inline-flex w-full sm:mt-auto sm:w-auto"
+            className="btn-secondary mt-6 inline-flex w-full sm:mt-auto sm:w-auto md:mt-8"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             Download Brochure
@@ -114,7 +114,7 @@ export function ProjectHeroSection({
 
       <div
         ref={mediaRef}
-        className="flex min-h-[500px] w-full justify-center md:min-h-[540px] lg:col-span-5 lg:min-h-[560px] lg:items-stretch lg:justify-end"
+        className="flex w-full justify-center lg:col-span-5 lg:min-h-[560px] lg:items-stretch lg:justify-end"
       >
         {youtubeShortId ? (
           <YouTubeShortEmbed

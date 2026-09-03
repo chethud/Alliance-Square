@@ -123,7 +123,7 @@ export function MysuruMap() {
         />
 
         <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="relative h-[420px] overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle lg:col-span-8 lg:h-[640px]">
+          <div className="relative h-[300px] overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle sm:h-[360px] lg:col-span-8 lg:h-[640px]">
             <div className="absolute inset-0 z-0">
               <MysuruMapView
                 markers={mapMarkers}
@@ -148,7 +148,7 @@ export function MysuruMap() {
             </div>
           </div>
 
-          <div className="flex h-[420px] flex-col lg:col-span-4 lg:h-[640px]">
+          <div className="flex min-h-[320px] flex-col sm:min-h-[360px] lg:col-span-4 lg:h-[640px] lg:min-h-0">
             <div className="relative flex h-[280px] shrink-0 flex-col overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle sm:h-[300px] lg:h-[340px]">
               <AnimatePresence mode="wait" initial={false}>
                 {active ? (
@@ -186,7 +186,7 @@ export function MysuruMap() {
                     exit={{ opacity: 0 }}
                     className="flex h-full items-center justify-center px-6 text-center text-sm text-cool-gray"
                   >
-                    Hover a project below to preview
+                    Tap a project below to preview
                   </motion.div>
                 )}
               </AnimatePresence>

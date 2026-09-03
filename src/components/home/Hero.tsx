@@ -318,7 +318,7 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen min-h-[480px] w-full overflow-hidden bg-dark"
+      className="relative mt-[var(--site-header-height)] h-[calc(100dvh-var(--site-header-height))] min-h-[420px] w-full overflow-hidden bg-dark md:min-h-[480px]"
       aria-label="Hero"
     >
       <div className="absolute inset-0">
@@ -356,7 +356,7 @@ export function Hero() {
         type="button"
         onClick={toggleMute}
         disabled={!isReady}
-        className="absolute bottom-6 left-6 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-dark/45 text-white backdrop-blur-sm transition-colors hover:bg-dark/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-not-allowed disabled:opacity-40 md:bottom-8 md:left-8"
+        className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-dark/45 text-white backdrop-blur-sm transition-colors hover:bg-dark/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-not-allowed disabled:opacity-40 sm:left-6 md:bottom-8 md:left-8"
         aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
         aria-pressed={!isMuted}
       >

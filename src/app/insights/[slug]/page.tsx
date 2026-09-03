@@ -66,7 +66,7 @@ export default async function InsightPage({ params }: PageProps) {
             <time className="ml-3 text-sm text-cool-gray" dateTime={post.date}>
               {formatDate(post.date)}
             </time>
-            <h1 className="mt-6 text-[26px] font-extrabold leading-tight tracking-tight text-charcoal sm:text-[28px] md:text-[32px] md:whitespace-nowrap lg:text-[36px]">
+            <h1 className="mt-6 text-[26px] font-extrabold leading-tight tracking-tight text-charcoal sm:text-[28px] md:text-[32px] lg:text-[36px]">
               {post.title}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-cool-gray">{post.excerpt}</p>

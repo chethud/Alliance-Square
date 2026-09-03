@@ -25,7 +25,7 @@ export function BlogGrid() {
             <FadeIn key={post.id} delay={index * 0.1} className="h-full">
               <Link
                 href={`/insights/${post.slug}`}
-                className="premium-card group relative block h-full min-h-[360px] overflow-hidden md:min-h-[400px]"
+                className="premium-card group relative block h-full min-h-[280px] overflow-hidden md:min-h-[400px]"
               >
                 <div className="absolute inset-0">
                   <Image

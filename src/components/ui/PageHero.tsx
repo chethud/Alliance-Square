@@ -32,7 +32,7 @@ export function PageHero({
 
   return (
     <section className="relative overflow-hidden">
-      <div className="page-hero-shell relative min-h-[380px] md:min-h-[440px] lg:min-h-[480px]">
+      <div className="page-hero-shell relative min-h-[280px] md:min-h-[340px] lg:min-h-[400px]">
         <Image
           src={image}
           alt={imageAlt}
@@ -45,14 +45,14 @@ export function PageHero({
         <BackButton
           fallbackHref={fallbackHref}
           label="Go back"
-          className="absolute left-4 top-24 z-10 md:left-6 md:top-28"
+          className="absolute left-4 top-20 z-10 md:left-6 md:top-24"
         />
       </div>
 
-      <div className="container-main relative -mt-28 pb-8 md:-mt-32 md:pb-10">
-        <div className="max-w-3xl rounded-2xl border border-white/10 bg-dark/40 p-6 shadow-premium backdrop-blur-xl md:p-8">
+      <div className="container-main relative -mt-24 pb-8 md:-mt-28 md:pb-10">
+        <div className="max-w-3xl rounded-2xl border border-white/10 bg-dark/40 p-5 shadow-premium backdrop-blur-xl sm:p-6 md:p-8">
           {breadcrumbs && breadcrumbs.length > 0 && (
-            <nav aria-label="Breadcrumb" className="mb-6">
+            <nav aria-label="Breadcrumb" className="mb-5 md:mb-6">
               <ol className="flex flex-wrap items-center gap-2 text-sm text-white/60">
                 {breadcrumbs.map((crumb, i) => (
                   <li key={crumb.label} className="flex items-center gap-2">

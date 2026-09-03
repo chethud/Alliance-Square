@@ -70,7 +70,7 @@ export function Navbar() {
               </a>
             </div>
 
-            <div className="flex items-center justify-end gap-2 lg:hidden">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2 lg:hidden">
               <a
                 href={company.phoneHref}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-light-gray bg-white text-brand-cyan transition-colors hover:border-brand-cyan/30 hover:bg-brand-cyan/5"
@@ -78,7 +78,7 @@ export function Navbar() {
               >
                 <Phone className="h-4 w-4" />
               </a>
-              <Link href="/contact#site-visit" className="btn-primary px-4 py-2.5 text-xs">
+              <Link href="/contact#site-visit" className="btn-primary px-3 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs">
                 Visit
               </Link>
               <button
@@ -96,7 +96,7 @@ export function Navbar() {
       </header>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-dark/95 backdrop-blur-xl pt-24 lg:hidden">
+        <div className="fixed inset-0 z-40 bg-dark/95 backdrop-blur-xl pt-20 lg:hidden">
           <nav className="container-main flex flex-col gap-1" aria-label="Mobile navigation">
             {navLinks.map((link) => (
               <Link
@@ -108,9 +108,16 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/contact#site-visit"
+              onClick={() => setMobileOpen(false)}
+              className="btn-primary mt-4 w-full justify-center py-3.5 text-base"
+            >
+              Schedule a Visit
+            </Link>
             <a
               href={company.phoneHref}
-              className="mt-6 flex items-center gap-3 rounded-xl px-4 py-4 text-lg font-medium text-brand-cyan"
+              className="mt-2 flex items-center gap-3 rounded-xl px-4 py-4 text-lg font-medium text-brand-cyan"
             >
               <Phone className="h-5 w-5" />
               {company.phone}

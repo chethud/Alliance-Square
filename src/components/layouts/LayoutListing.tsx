@@ -40,7 +40,7 @@ export function LayoutListing() {
           description="Filter by approval type and explore MUDA, DTCP, and premium residential plots across Mysuru."
         />
 
-        <div className="mt-10 flex flex-wrap gap-2" role="tablist" aria-label="Filter layouts">
+        <div className="mt-10 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 md:flex-wrap md:overflow-visible" role="tablist" aria-label="Filter layouts">
           {filterOptions.map((option) => (
             <button
               key={option.value}
@@ -48,7 +48,7 @@ export function LayoutListing() {
               aria-selected={activeFilter === option.value}
               onClick={() => setActiveFilter(option.value)}
               className={cn(
-                "rounded-full border px-5 py-2.5 text-sm font-semibold transition-all duration-300",
+                "shrink-0 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 sm:px-5",
                 activeFilter === option.value
                   ? "border-brand-cyan bg-brand-cyan text-white shadow-glow"
                   : "border-light-gray bg-white text-charcoal hover:border-brand-cyan/50 hover:text-brand-cyan"

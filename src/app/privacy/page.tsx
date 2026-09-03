@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
-import { heroSliderImages } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -11,7 +10,7 @@ export default function PrivacyPage() {
     <>
       <PageHero
         title="Privacy Policy"
-        image={heroSliderImages[7]}
+        image="/images/disclaimer-banner.jpg"
         imageAlt="Alliance Square Privacy Policy"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Privacy Policy" }]}
       />

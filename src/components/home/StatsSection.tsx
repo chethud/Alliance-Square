@@ -55,7 +55,7 @@ function AnimatedStatValue({
   }, [play, target, suffix, format, reduceMotion]);
 
   return (
-    <p className="text-3xl font-extrabold leading-none tabular-nums text-white sm:text-4xl md:text-5xl lg:text-6xl">
+    <p className="text-xl font-extrabold leading-none tabular-nums text-white sm:text-3xl md:text-5xl lg:text-6xl">
       {display}
     </p>
   );
@@ -84,12 +84,12 @@ export function StatsSection() {
     >
       <div className="absolute inset-0 bg-mesh-dark opacity-60" aria-hidden="true" />
       <div className="container-main relative flex min-h-[132px] items-center md:min-h-[148px]">
-        <div className="grid w-full grid-cols-2 items-center gap-x-3 gap-y-6 md:grid-cols-4 md:gap-y-0">
+        <div className="grid w-full grid-cols-4 items-center gap-x-1.5 sm:gap-x-3">
           {statItems.map((item, index) => (
             <div
               key={item.label}
-              className={`flex flex-col items-center justify-center px-3 text-center md:px-5 ${
-                index > 0 ? "md:border-l md:border-white/10" : ""
+              className={`flex flex-col items-center justify-center px-1 text-center sm:px-3 md:px-5 ${
+                index > 0 ? "border-l border-white/10" : ""
               }`}
             >
               <AnimatedStatValue
@@ -99,7 +99,7 @@ export function StatsSection() {
                 format={item.format}
                 play={isInView}
               />
-              <p className="mt-2 max-w-[160px] text-xs leading-snug text-white/55 md:max-w-[180px] md:text-sm">
+              <p className="mt-1.5 max-w-full text-[10px] leading-snug text-white/55 sm:mt-2 sm:text-xs md:max-w-[180px] md:text-sm">
                 {item.label}
               </p>
             </div>

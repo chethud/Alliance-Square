@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
-import { heroSliderImages } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions",
@@ -11,7 +10,7 @@ export default function TermsPage() {
     <>
       <PageHero
         title="Terms & Conditions"
-        image={heroSliderImages[8]}
+        image="/images/terms-banner.jpg"
         imageAlt="Alliance Square Terms and Conditions"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Terms & Conditions" }]}
       />

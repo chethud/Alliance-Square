@@ -38,7 +38,7 @@ function StoryVisual({ driver }: { driver: GrowthDriver }) {
 
   return (
     <div
-      className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#E8ECEF]"
+      className="relative aspect-[2/1] w-full shrink-0 overflow-hidden bg-[#E8ECEF] md:aspect-[16/10]"
       aria-hidden="true"
     >
       <Image
@@ -278,7 +278,7 @@ export function WhyMysuru() {
         <div className="absolute bottom-[12%] right-[10%] h-10 w-10 border border-brand-cyan/[0.05]" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[1360px] px-5 md:px-12 lg:px-16">
+      <div className="container-main relative">
         {/* Editorial header */}
         <header className="w-full">
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-cyan">
@@ -288,7 +288,7 @@ export function WhyMysuru() {
           <div className="mt-6 flex items-center gap-6 md:gap-8 lg:gap-10">
             <h2
               id="why-mysuru-heading"
-              className="shrink-0 text-[40px] font-semibold tracking-[-0.03em] text-charcoal md:text-[56px] lg:text-[64px]"
+              className="shrink-0 text-[32px] font-semibold tracking-[-0.03em] text-charcoal sm:text-[40px] md:text-[56px] lg:text-[64px]"
               style={{ lineHeight: 1.05 }}
             >
               Why Mysuru?
