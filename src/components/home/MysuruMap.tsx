@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getGroupedMapMarkers, mapMarkers } from "@/data/projects";
+import { useCms } from "@/components/cms/CmsProvider";
 import type { MapMarker } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -20,8 +20,6 @@ const MysuruMapView = dynamic(
     ),
   }
 );
-
-const { running: runningMarkers, completed: completedMarkers } = getGroupedMapMarkers();
 
 const mapPreviewImageClass: Record<string, string> = {
   "sridevi-lake-view": "object-cover object-[center_42%]",
@@ -103,6 +101,9 @@ function ProjectListItem({
 }
 
 export function MysuruMap() {
+  const { mapMarkers, groupedMapMarkers } = useCms();
+  const runningMarkers = groupedMapMarkers.running;
+  const completedMarkers = groupedMapMarkers.completed;
   const [activeMarker, setActiveMarker] = useState<string | null>(
     runningMarkers[0]?.projectSlug ?? mapMarkers[0]?.projectSlug ?? null
   );

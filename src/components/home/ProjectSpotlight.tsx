@@ -5,11 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { getSpotlightProjects } from "@/data/projects";
+import { useCms } from "@/components/cms/CmsProvider";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
 
-const SPOTLIGHT_PROJECTS = getSpotlightProjects();
-const TOTAL = SPOTLIGHT_PROJECTS.length;
 const ROTATE_MS = 3000;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -34,15 +33,17 @@ function SpotlightContent({ project }: { project: Project }) {
 }
 
 function SpotlightDots({
+  items,
   current,
   onSelect,
   className,
 }: {
+  items: Project[];
   current: number;
   onSelect: (index: number) => void;
   className?: string;
 }) {
-  if (TOTAL <= 1) return null;
+  if (items.length <= 1) return null;
 
   return (
     <div
@@ -50,13 +51,13 @@ function SpotlightDots({
       role="tablist"
       aria-label="Project spotlight slides"
     >
-      {SPOTLIGHT_PROJECTS.map((item, index) => (
+      {items.map((item, index) => (
         <button
           key={item.id}
           type="button"
           role="tab"
           aria-selected={index === current}
-          aria-label={`Show ${item.name}, slide ${index + 1} of ${TOTAL}`}
+          aria-label={`Show ${item.name}, slide ${index + 1} of ${items.length}`}
           onClick={() => onSelect(index)}
           className={cn(
             "h-2.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-dark/40",
@@ -69,17 +70,20 @@ function SpotlightDots({
 }
 
 export function ProjectSpotlight() {
+  const { projects } = useCms();
+  const items = getSpotlightProjects(projects);
+  const total = items.length;
   const sectionRef = useRef<HTMLElement>(null);
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [timerReset, setTimerReset] = useState(0);
   const reduceMotion = useReducedMotion();
   const isInView = useInView(sectionRef, { amount: 0.35 });
-  const project = SPOTLIGHT_PROJECTS[current];
+  const project = items[current];
 
   const next = useCallback(() => {
-    setCurrent((index) => (index + 1) % TOTAL);
-  }, []);
+    setCurrent((index) => (index + 1) % Math.max(total, 1));
+  }, [total]);
 
   const goTo = useCallback((index: number) => {
     setCurrent(index);
@@ -87,11 +91,13 @@ export function ProjectSpotlight() {
   }, []);
 
   useEffect(() => {
-    if (reduceMotion || isHovered || !isInView || TOTAL <= 1) return;
+    if (reduceMotion || isHovered || !isInView || total <= 1) return;
 
     const timer = window.setInterval(next, ROTATE_MS);
     return () => window.clearInterval(timer);
   }, [isHovered, isInView, next, reduceMotion, timerReset]);
+
+  if (!project) return null;
 
   return (
     <section
@@ -140,6 +146,7 @@ export function ProjectSpotlight() {
           </div>
 
           <SpotlightDots
+            items={items}
             current={current}
             onSelect={goTo}
             className="absolute bottom-6 left-1/2 -translate-x-1/2 md:bottom-8"

@@ -1,14 +1,14 @@
-import { company, contact, stats } from "@/data/company";
-import { projects } from "@/data/projects";
-import { blogPosts } from "@/data/blogs";
+import { company, contact } from "@/data/company";
 import { faqs } from "@/data/faqs";
-import { testimonials } from "@/data/testimonials";
 import { absoluteUrl, SITE_NAME, SITE_URL, SOCIAL_PROFILES } from "@/lib/seo/config";
 import { getAllIndexableUrls } from "@/lib/seo/urls";
 import { generateSchemaInventory } from "@/lib/seo/schema";
+import { getPublished } from "@/lib/published";
 
 export async function GET() {
+  const { projects, insights, testimonials, stats } = await getPublished();
   const schemaInventory = generateSchemaInventory();
+  const urls = await getAllIndexableUrls();
 
   const lines = [
     `# ${SITE_NAME} — Full Machine-Readable Knowledge Index`,
@@ -36,7 +36,7 @@ export async function GET() {
     `- Residential plots, layouts, apartments, villas, land investment`,
     "",
     "## All indexable URLs",
-    ...getAllIndexableUrls().map(
+    ...urls.map(
       (entry) =>
         `- url: ${absoluteUrl(entry.path)} | priority: ${entry.priority} | changefreq: ${entry.changeFrequency}`
     ),
@@ -56,7 +56,7 @@ export async function GET() {
     ]),
     "",
     "## Articles",
-    ...blogPosts.flatMap((b) => [
+    ...insights.flatMap((b) => [
       `### ${b.title}`,
       `type: BlogPosting`,
       `url: ${absoluteUrl(`/insights/${b.slug}`)}`,

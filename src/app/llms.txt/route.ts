@@ -1,12 +1,13 @@
 import { company, contact } from "@/data/company";
-import { projects } from "@/data/projects";
-import { blogPosts } from "@/data/blogs";
 import { faqs } from "@/data/faqs";
 import { absoluteUrl, SITE_NAME, SITE_URL, SOCIAL_PROFILES } from "@/lib/seo/config";
 import { getIndexablePaths } from "@/lib/seo/urls";
 import { getSchemaInstanceCount } from "@/lib/seo/schema";
+import { getPublished } from "@/lib/published";
 
 export async function GET() {
+  const { projects, insights } = await getPublished();
+  const paths = await getIndexablePaths();
   const lines = [
     `# ${SITE_NAME}`,
     `# Canonical site: ${SITE_URL}`,
@@ -34,7 +35,7 @@ export async function GET() {
     ),
     "",
     "## Insights",
-    ...blogPosts.map((b) => `- ${b.title} — ${absoluteUrl(`/insights/${b.slug}`)}`),
+    ...insights.map((b) => `- ${b.title} — ${absoluteUrl(`/insights/${b.slug}`)}`),
     "",
     "## FAQs",
     ...faqs.slice(0, 5).map((f) => `- Q: ${f.question}`),
@@ -43,7 +44,7 @@ export async function GET() {
     ...SOCIAL_PROFILES.map((url) => `- ${url}`),
     "",
     "## Indexable URLs",
-    ...getIndexablePaths().map((path) => `- ${absoluteUrl(path)}`),
+    ...paths.map((path) => `- ${absoluteUrl(path)}`),
     "",
     `## Structured data instances: ${getSchemaInstanceCount()}`,
     "",

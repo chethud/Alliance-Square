@@ -1,15 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getProjectMapStatus } from "@/data/projects";
-import type { Project } from "@/types";
+import type { CmsMapStatus, Project } from "@/types";
 
 interface LayoutListItemProps {
   project: Project;
+  mapStatus?: CmsMapStatus;
 }
 
-export function LayoutListItem({ project }: LayoutListItemProps) {
-  const isCompleted = getProjectMapStatus(project.slug) === "completed";
+export function LayoutListItem({ project, mapStatus = "running" }: LayoutListItemProps) {
+  const isCompleted = mapStatus === "completed";
 
   return (
     <article className="premium-card group flex h-full flex-col overflow-hidden">

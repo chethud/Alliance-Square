@@ -3,9 +3,10 @@
 import { useState, FormEvent } from "react";
 import { FadeIn } from "@/components/ui/Motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { projects } from "@/data/projects";
+import { useCms } from "@/components/cms/CmsProvider";
 
 export function LeadForm() {
+  const { projects } = useCms();
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

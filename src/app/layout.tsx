@@ -3,17 +3,22 @@ import Script from "next/script";
 
 import { OrganizationSchema } from "@/components/seo/StructuredData";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { CmsProvider } from "@/components/cms/CmsProvider";
 import { rootMetadata } from "@/lib/seo/metadata";
+import { getPublished } from "@/lib/published";
 
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = rootMetadata;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const published = await getPublished();
   return (
     <html lang="en-IN">
       <body>
@@ -22,8 +27,10 @@ export default function RootLayout({
           src="https://www.youtube.com/iframe_api"
           strategy="afterInteractive"
         />
-        <OrganizationSchema />
-        <SiteChrome>{children}</SiteChrome>
+        <CmsProvider value={published}>
+          <OrganizationSchema />
+          <SiteChrome>{children}</SiteChrome>
+        </CmsProvider>
       </body>
     </html>
   );

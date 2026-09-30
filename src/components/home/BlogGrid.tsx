@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { FadeIn } from "@/components/ui/Motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { blogPosts } from "@/data/blogs";
+import { getPublished } from "@/lib/published";
 
-export function BlogGrid() {
-  const posts = blogPosts.slice(0, 3);
+export async function BlogGrid() {
+  const { insights } = await getPublished();
+  const posts = insights.slice(0, 3);
 
   return (
     <section className="section-pad bg-off-white" aria-labelledby="insights-heading">

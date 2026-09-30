@@ -6,8 +6,8 @@ import { LayoutListItem } from "@/components/layouts/LayoutListItem";
 import {
   filterOptions,
   getProjectsInOrder,
-  layoutsPageOrder,
 } from "@/data/projects";
+import { useCms } from "@/components/cms/CmsProvider";
 import type { ProjectFilter } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -15,11 +15,12 @@ import { cn } from "@/lib/utils";
 const layoutsListingExcludedSlugs = new Set(["dhatri-square", "dr-daya-nagar"]);
 
 export function LayoutListing() {
+  const { projects, layoutsPageOrder, mapStatusBySlug } = useCms();
   const [activeFilter, setActiveFilter] = useState<ProjectFilter>("all");
 
   const orderedProjects = useMemo(
-    () => getProjectsInOrder(layoutsPageOrder).filter((p) => !layoutsListingExcludedSlugs.has(p.slug)),
-    []
+    () => getProjectsInOrder(layoutsPageOrder, projects).filter((p) => !layoutsListingExcludedSlugs.has(p.slug)),
+    [layoutsPageOrder, projects]
   );
 
   const filtered = useMemo(() => {
@@ -61,7 +62,9 @@ export function LayoutListing() {
 
         <div className="mt-8 grid gap-8 md:grid-cols-2">
           {filtered.length > 0 ? (
-            filtered.map((project) => <LayoutListItem key={project.id} project={project} />)
+            filtered.map((project) => (
+              <LayoutListItem key={project.id} project={project} mapStatus={mapStatusBySlug[project.slug]} />
+            ))
           ) : (
             <p className="text-cool-gray">No layouts match this filter.</p>
           )}

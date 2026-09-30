@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { FadeIn } from "@/components/ui/Motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { company, stats } from "@/data/company";
+import { company } from "@/data/company";
+import { getPublished } from "@/lib/published";
 
-export function BrandIntro() {
+export async function BrandIntro() {
+  const { stats } = await getPublished();
   return (
     <section className="section-pad bg-white pt-10 md:pt-12 lg:pt-14" aria-labelledby="who-we-are">
       <div className="container-main">

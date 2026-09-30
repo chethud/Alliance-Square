@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
 import { FadeIn } from "@/components/ui/Motion";
-import { blogPosts } from "@/data/blogs";
+import { getPublished } from "@/lib/published";
 import { insightsHero } from "@/data/images";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,8 @@ export const metadata: Metadata = createPageMetadata({
   image: insightsHero,
 });
 
-export default function InsightsPage() {
+export default async function InsightsPage() {
+  const { insights } = await getPublished();
   return (
     <>
       <InsightsIndexSchema />
@@ -35,7 +36,7 @@ export default function InsightsPage() {
       <section className="section-spacing bg-off-white pt-0">
         <div className="container-main">
           <div className="grid items-stretch gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {blogPosts.map((post, index) => (
+            {insights.map((post, index) => (
               <FadeIn key={post.id} delay={index * 0.05} className="h-full">
                 <Link
                   href={`/insights/${post.slug}`}

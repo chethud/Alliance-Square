@@ -3,7 +3,8 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { layoutsPageOrder, getProjectsInOrder } from "@/data/projects";
+import { getProjectsInOrder } from "@/data/projects";
+import { useCms } from "@/components/cms/CmsProvider";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -17,8 +18,9 @@ const layoutSpring = {
 };
 
 export function ProjectGrid({ showHeader = true }: { showHeader?: boolean }) {
+  const { projects, layoutsPageOrder } = useCms();
   const reduceMotion = useReducedMotion();
-  const displayed = getProjectsInOrder(layoutsPageOrder).slice(0, HOME_PROJECT_LIMIT);
+  const displayed = getProjectsInOrder(layoutsPageOrder, projects).slice(0, HOME_PROJECT_LIMIT);
 
   return (
     <section

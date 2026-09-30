@@ -7,7 +7,7 @@ import { FadeIn } from "@/components/ui/Motion";
 import { BackButton } from "@/components/ui/BackButton";
 import { BlogSchema } from "@/components/seo/StructuredData";
 import { createPageMetadata } from "@/lib/seo/metadata";
-import { blogPosts, getBlogBySlug } from "@/data/blogs";
+import { getPublished } from "@/lib/published";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +18,14 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return blogPosts.map((b) => ({ slug: b.slug }));
+  const { insights } = await getPublished();
+  return insights.map((b) => ({ slug: b.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogBySlug(slug);
+  const { insights } = await getPublished();
+  const post = insights.find((item) => item.slug === slug);
   if (!post) return { title: "Article Not Found" };
   return createPageMetadata({
     title: post.title,
@@ -36,7 +38,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function InsightPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getBlogBySlug(slug);
+  const { insights } = await getPublished();
+  const post = insights.find((item) => item.slug === slug);
   if (!post) notFound();
 
   return (

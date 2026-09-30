@@ -495,39 +495,114 @@ function mergeProjects(catalog: Project[], overrides: CmsProject[]): Project[] {
   ];
 }
 
-export const projects: Project[] = mergeProjects(catalogProjects, cmsProjects);
+export type ProjectCatalog = {
+  cmsProjects: CmsProject[];
+  projects: Project[];
+  mapMarkers: MapMarker[];
+  layoutsPageOrder: string[];
+  mapStatusBySlug: Record<string, "running" | "completed">;
+  groupedMapMarkers: { running: MapMarker[]; completed: MapMarker[] };
+};
 
-export const mapMarkers: MapMarker[] = projects
-  .filter((p) => p.location.coordinates)
-  .map((p) => ({
-    projectSlug: p.slug,
-    name: p.name,
-    priceLabel: p.priceLabel,
-    location: `${p.location.area}, ${p.location.city}`,
-    heroImage: p.heroImage,
-    lat: p.location.coordinates!.lat,
-    lng: p.location.coordinates!.lng,
-  }));
+export function createProjectCatalog(overrides: CmsProject[]): ProjectCatalog {
+  const projects = mergeProjects(catalogProjects, overrides);
+  const cmsBySlug = new Map(overrides.map((project) => [project.slug, project]));
+  const catalogSlugSet = new Set(catalogProjects.map((project) => project.slug));
 
-export function getProjectBySlug(slug: string): Project | undefined {
-  return projects.find((p) => p.slug === slug);
+  function shownOnLayouts(slug: string) {
+    const override = cmsBySlug.get(slug);
+    return override ? override.showOnLayouts !== false : true;
+  }
+
+  function mapStatusFor(slug: string): "running" | "completed" {
+    const override = cmsBySlug.get(slug);
+    if (override?.mapStatus) return override.mapStatus;
+    if ((catalogRunningMapMarkerOrder as readonly string[]).includes(slug)) return "running";
+    return "completed";
+  }
+
+  const featuredCmsSlugs = overrides
+    .filter((project) => project.featured && shownOnLayouts(project.slug))
+    .map((project) => project.slug);
+
+  const newCmsSlugs = overrides
+    .filter((project) => !catalogSlugSet.has(project.slug) && shownOnLayouts(project.slug))
+    .map((project) => project.slug);
+
+  const layoutsPageOrder = [
+    ...featuredCmsSlugs,
+    ...catalogLayoutsPageOrder.filter(
+      (slug) => shownOnLayouts(slug) && !featuredCmsSlugs.includes(slug)
+    ),
+    ...newCmsSlugs.filter((slug) => !featuredCmsSlugs.includes(slug)),
+  ];
+
+  const allMapSlugs = [
+    ...catalogRunningMapMarkerOrder,
+    ...catalogCompletedMapMarkerOrder,
+    ...overrides.map((project) => project.slug),
+  ];
+  const uniqueMapSlugs = [...new Set(allMapSlugs)];
+  const runningMapMarkerOrder = uniqueMapSlugs.filter((slug) => mapStatusFor(slug) === "running");
+  const completedMapMarkerOrder = uniqueMapSlugs.filter((slug) => mapStatusFor(slug) === "completed");
+
+  const mapMarkers: MapMarker[] = projects
+    .filter((p) => p.location.coordinates)
+    .map((p) => ({
+      projectSlug: p.slug,
+      name: p.name,
+      priceLabel: p.priceLabel,
+      location: `${p.location.area}, ${p.location.city}`,
+      heroImage: p.heroImage,
+      lat: p.location.coordinates!.lat,
+      lng: p.location.coordinates!.lng,
+    }));
+
+  const bySlug = new Map(mapMarkers.map((m) => [m.projectSlug, m]));
+  const mapStatusBySlug = Object.fromEntries(
+    uniqueMapSlugs.map((slug) => [slug, mapStatusFor(slug)])
+  ) as Record<string, "running" | "completed">;
+
+  return {
+    cmsProjects: overrides,
+    projects,
+    mapMarkers,
+    layoutsPageOrder,
+    mapStatusBySlug,
+    groupedMapMarkers: {
+      running: runningMapMarkerOrder
+        .map((slug) => bySlug.get(slug))
+        .filter((m): m is MapMarker => Boolean(m)),
+      completed: completedMapMarkerOrder
+        .map((slug) => bySlug.get(slug))
+        .filter((m): m is MapMarker => Boolean(m)),
+    },
+  };
 }
 
-export function getFeaturedProject(): Project {
-  return projects.find((p) => p.spotlight) ?? projects[0];
+const fileCatalog = createProjectCatalog(cmsProjects);
+
+export const projects: Project[] = fileCatalog.projects;
+export const mapMarkers: MapMarker[] = fileCatalog.mapMarkers;
+export const layoutsPageOrder = fileCatalog.layoutsPageOrder;
+
+export function getProjectBySlug(slug: string, list: Project[] = projects): Project | undefined {
+  return list.find((p) => p.slug === slug);
 }
 
-export function getSpotlightProjects(): Project[] {
-  return getProjectsInOrder([
-    "uk-square",
-    "cnm-apex-city",
-    "sridevi-lake-view",
-    "jeevan-vihar-phase-2",
-  ]);
+export function getFeaturedProject(list: Project[] = projects): Project {
+  return list.find((p) => p.spotlight) ?? list[0];
 }
 
-export function getRelatedProjects(currentSlug: string, limit = 3): Project[] {
-  return projects.filter((p) => p.slug !== currentSlug).slice(0, limit);
+export function getSpotlightProjects(list: Project[] = projects): Project[] {
+  return getProjectsInOrder(
+    ["uk-square", "cnm-apex-city", "sridevi-lake-view", "jeevan-vihar-phase-2"],
+    list
+  );
+}
+
+export function getRelatedProjects(currentSlug: string, limit = 3, list: Project[] = projects): Project[] {
+  return list.filter((p) => p.slug !== currentSlug).slice(0, limit);
 }
 
 export const filterOptions: { value: import("@/types").ProjectFilter; label: string }[] = [
@@ -539,70 +614,15 @@ export const filterOptions: { value: import("@/types").ProjectFilter; label: str
   { value: "investment", label: "Investment" },
 ];
 
-const cmsBySlug = new Map(cmsProjects.map((project) => [project.slug, project]));
-const catalogSlugSet = new Set(catalogProjects.map((project) => project.slug));
-
-function shownOnLayouts(slug: string) {
-  const override = cmsBySlug.get(slug);
-  return override ? override.showOnLayouts !== false : true;
+export function getProjectMapStatus(
+  slug: string,
+  mapStatusBySlug: Record<string, "running" | "completed"> = fileCatalog.mapStatusBySlug
+): "running" | "completed" {
+  return mapStatusBySlug[slug] ?? "completed";
 }
 
-function mapStatusFor(slug: string): "running" | "completed" {
-  const override = cmsBySlug.get(slug);
-  if (override?.mapStatus) return override.mapStatus;
-  if ((catalogRunningMapMarkerOrder as readonly string[]).includes(slug)) return "running";
-  return "completed";
-}
-
-export function getProjectMapStatus(slug: string): "running" | "completed" {
-  return mapStatusFor(slug);
-}
-
-const featuredCmsSlugs = cmsProjects
-  .filter((project) => project.featured && shownOnLayouts(project.slug))
-  .map((project) => project.slug);
-
-const newCmsSlugs = cmsProjects
-  .filter((project) => !catalogSlugSet.has(project.slug) && shownOnLayouts(project.slug))
-  .map((project) => project.slug);
-
-export const layoutsPageOrder = [
-  ...featuredCmsSlugs,
-  ...catalogLayoutsPageOrder.filter(
-    (slug) => shownOnLayouts(slug) && !featuredCmsSlugs.includes(slug)
-  ),
-  ...newCmsSlugs.filter((slug) => !featuredCmsSlugs.includes(slug)),
-];
-
-const allMapSlugs = [
-  ...catalogRunningMapMarkerOrder,
-  ...catalogCompletedMapMarkerOrder,
-  ...cmsProjects.map((project) => project.slug),
-];
-const uniqueMapSlugs = [...new Set(allMapSlugs)];
-
-export const runningMapMarkerOrder = uniqueMapSlugs.filter(
-  (slug) => mapStatusFor(slug) === "running"
-);
-
-export const completedMapMarkerOrder = uniqueMapSlugs.filter(
-  (slug) => mapStatusFor(slug) === "completed"
-);
-
-export function getGroupedMapMarkers(): {
-  running: MapMarker[];
-  completed: MapMarker[];
-} {
-  const bySlug = new Map(mapMarkers.map((m) => [m.projectSlug, m]));
-
-  return {
-    running: runningMapMarkerOrder
-      .map((slug) => bySlug.get(slug))
-      .filter((m): m is MapMarker => Boolean(m)),
-    completed: completedMapMarkerOrder
-      .map((slug) => bySlug.get(slug))
-      .filter((m): m is MapMarker => Boolean(m)),
-  };
+export function getGroupedMapMarkers() {
+  return fileCatalog.groupedMapMarkers;
 }
 
 /** Sidebar featured order from original layouts page */
@@ -621,8 +641,8 @@ export const featuredSidebarOrder = [
 export const layoutsBrochureUrl =
   "https://www.alliancesquare.com/user_assets/pdf/AllianceSquare-Projects-Brochure.pdf";
 
-export function getProjectsInOrder(slugs: readonly string[]): Project[] {
+export function getProjectsInOrder(slugs: readonly string[], list: Project[] = projects): Project[] {
   return slugs
-    .map((slug) => projects.find((p) => p.slug === slug))
+    .map((slug) => list.find((p) => p.slug === slug))
     .filter((p): p is Project => Boolean(p));
 }

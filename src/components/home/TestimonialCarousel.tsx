@@ -5,16 +5,20 @@ import Image from "next/image";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { stats } from "@/data/company";
-import { testimonials } from "@/data/testimonials";
+import { useCms } from "@/components/cms/CmsProvider";
 import type { Testimonial } from "@/types";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const ROTATE_MS = 3000;
-const TOTAL = testimonials.length;
 
-function TestimonialImagePanel({ testimonial }: { testimonial: Testimonial }) {
+function TestimonialImagePanel({
+  testimonial,
+  customers,
+}: {
+  testimonial: Testimonial;
+  customers: number;
+}) {
   return (
     <div className="relative h-full w-full min-h-0">
       {testimonial.image && (
@@ -47,7 +51,7 @@ function TestimonialImagePanel({ testimonial }: { testimonial: Testimonial }) {
           )}
 
           <p className="mt-2.5 border-t border-white/10 pt-2.5 text-[11px] font-medium tracking-wide text-white/75 md:mt-4 md:pt-4 md:text-xs">
-            {stats.customers.toLocaleString("en-IN")}+ Happy Customers
+            {customers.toLocaleString("en-IN")}+ Happy Customers
           </p>
         </div>
       </div>
@@ -57,6 +61,7 @@ function TestimonialImagePanel({ testimonial }: { testimonial: Testimonial }) {
 
 function TestimonialContentPanel({
   testimonial,
+  testimonials,
   current,
   onPrev,
   onNext,
@@ -64,12 +69,14 @@ function TestimonialContentPanel({
   reduceMotion,
 }: {
   testimonial: Testimonial;
+  testimonials: Testimonial[];
   current: number;
   onPrev: () => void;
   onNext: () => void;
   onSelect: (index: number) => void;
   reduceMotion: boolean | null;
 }) {
+  const total = testimonials.length;
   return (
     <div className="flex h-full min-h-0 flex-col px-4 py-4 sm:px-8 sm:py-8 lg:px-10 lg:py-10 xl:px-12 xl:py-11">
       <AnimatePresence mode="wait">
@@ -112,7 +119,7 @@ function TestimonialContentPanel({
               type="button"
               role="tab"
               aria-selected={index === current}
-              aria-label={`Go to testimonial ${index + 1} of ${TOTAL}`}
+              aria-label={`Go to testimonial ${index + 1} of ${total}`}
               onClick={() => onSelect(index)}
               className={cn(
                 "h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-secondary focus-visible:ring-offset-2 sm:h-2.5",
@@ -137,7 +144,7 @@ function TestimonialContentPanel({
             className="min-w-[3.75rem] text-center text-xs tabular-nums text-cool-gray sm:min-w-[4.5rem] sm:text-sm"
             aria-live="polite"
           >
-            {String(current + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
+            {String(current + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
           <button
             type="button"
@@ -154,6 +161,8 @@ function TestimonialContentPanel({
 }
 
 export function TestimonialCarousel({ className }: { className?: string } = {}) {
+  const { testimonials, stats } = useCms();
+  const total = testimonials.length;
   const sectionRef = useRef<HTMLElement>(null);
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -163,14 +172,14 @@ export function TestimonialCarousel({ className }: { className?: string } = {}) 
   const testimonial = testimonials[current];
 
   const prev = useCallback(() => {
-    setCurrent((c) => (c === 0 ? TOTAL - 1 : c - 1));
+    setCurrent((c) => (c === 0 ? total - 1 : c - 1));
     setTimerReset((value) => value + 1);
-  }, []);
+  }, [total]);
 
   const next = useCallback(() => {
-    setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1));
+    setCurrent((c) => (c === total - 1 ? 0 : c + 1));
     setTimerReset((value) => value + 1);
-  }, []);
+  }, [total]);
 
   const goTo = useCallback((index: number) => {
     setCurrent(index);
@@ -178,14 +187,14 @@ export function TestimonialCarousel({ className }: { className?: string } = {}) 
   }, []);
 
   useEffect(() => {
-    if (reduceMotion || isHovered || !isInView || TOTAL <= 1) return;
+    if (reduceMotion || isHovered || !isInView || total <= 1) return;
 
     const timer = window.setInterval(() => {
-      setCurrent((c) => (c === TOTAL - 1 ? 0 : c + 1));
+      setCurrent((c) => (c === total - 1 ? 0 : c + 1));
     }, ROTATE_MS);
 
     return () => window.clearInterval(timer);
-  }, [isHovered, isInView, reduceMotion, timerReset]);
+  }, [isHovered, isInView, reduceMotion, timerReset, total]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -202,6 +211,8 @@ export function TestimonialCarousel({ className }: { className?: string } = {}) 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [next, prev]);
+
+  if (!testimonial) return null;
 
   return (
     <section
@@ -238,13 +249,14 @@ export function TestimonialCarousel({ className }: { className?: string } = {}) 
                   transition={{ duration: 0.4, ease: EASE }}
                   className="h-full"
                 >
-                  <TestimonialImagePanel testimonial={testimonial} />
+                  <TestimonialImagePanel testimonial={testimonial} customers={stats.customers} />
                 </motion.div>
               </AnimatePresence>
             </div>
 
             <TestimonialContentPanel
               testimonial={testimonial}
+              testimonials={testimonials}
               current={current}
               onPrev={prev}
               onNext={next}

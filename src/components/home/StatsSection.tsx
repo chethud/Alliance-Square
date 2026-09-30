@@ -3,19 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { animate, useInView, useReducedMotion } from "framer-motion";
-import { stats } from "@/data/company";
+import { useCms } from "@/components/cms/CmsProvider";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const formatInteger = (value: number) => String(Math.round(value));
 const formatLocale = (value: number) => Math.round(value).toLocaleString("en-IN");
-
-const statItems = [
-  { target: stats.years, suffix: "+", label: "Years of Real Estate Excellence", format: formatInteger },
-  { target: stats.layouts, suffix: "+", label: "Layouts", format: formatInteger },
-  { target: stats.customers, suffix: "+", label: "Happy Customers", format: formatLocale },
-  { target: 100, suffix: "%", label: "Customer-Focused Approach", format: formatInteger },
-] as const;
 
 function AnimatedStatValue({
   target,
@@ -62,6 +55,7 @@ function AnimatedStatValue({
 }
 
 export function StatsSection() {
+  const { stats } = useCms();
   const pathname = usePathname();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, {
@@ -69,6 +63,13 @@ export function StatsSection() {
     margin: "0px 0px -10% 0px",
   });
   const [animationKey, setAnimationKey] = useState(0);
+  const focused = Number.parseInt(stats.customerFocused, 10);
+  const statItems = [
+    { target: stats.years, suffix: "+", label: "Years of Real Estate Excellence", format: formatInteger },
+    { target: stats.layouts, suffix: "+", label: "Layouts", format: formatInteger },
+    { target: stats.customers, suffix: "+", label: "Happy Customers", format: formatLocale },
+    { target: Number.isFinite(focused) ? focused : 100, suffix: "%", label: "Customer-Focused Approach", format: formatInteger },
+  ] as const;
 
   useEffect(() => {
     if (pathname === "/") {

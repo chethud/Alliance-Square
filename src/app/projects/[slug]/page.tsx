@@ -12,8 +12,9 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FadeIn } from "@/components/ui/Motion";
 import { BackButton } from "@/components/ui/BackButton";
 import { ProjectSchema } from "@/components/seo/StructuredData";
-import { getProjectBySlug, getRelatedProjects, projects, layoutsBrochureUrl } from "@/data/projects";
+import { getProjectBySlug, getRelatedProjects, layoutsBrochureUrl } from "@/data/projects";
 import { galleryVideoIds } from "@/lib/youtube";
+import { getPublished } from "@/lib/published";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
@@ -24,12 +25,14 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
+  const { projects } = await getPublished();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const { projects } = await getPublished();
+  const project = getProjectBySlug(slug, projects);
   if (!project) return { title: "Project Not Found" };
 
   return createPageMetadata({
@@ -42,10 +45,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const { projects } = await getPublished();
+  const project = getProjectBySlug(slug, projects);
   if (!project) notFound();
 
-  const related = getRelatedProjects(slug);
+  const related = getRelatedProjects(slug, 3, projects);
 
   return (
     <>

@@ -4,10 +4,9 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { heroVideoId } from "@/data/company";
+import { useCms } from "@/components/cms/CmsProvider";
 import { heroSliderImages } from "@/data/images";
 
-const HERO_VIDEO_ID = heroVideoId;
 const MOBILE_HERO_IMAGE = heroSliderImages[0];
 
 interface YTPlayer {
@@ -49,6 +48,7 @@ declare global {
 }
 
 export function Hero() {
+  const { heroVideoId } = useCms();
   const sectionRef = useRef<HTMLElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
@@ -105,7 +105,7 @@ export function Hero() {
     if (!playerContainerRef.current || playerRef.current || !window.YT?.Player) return;
 
     playerRef.current = new window.YT.Player(playerContainerRef.current, {
-      videoId: HERO_VIDEO_ID,
+      videoId: heroVideoId,
       host: "https://www.youtube-nocookie.com",
       playerVars: {
         autoplay: 1,
@@ -195,7 +195,7 @@ export function Hero() {
         },
       },
     });
-  }, [isDesktop, startPlayback, syncMuteState, tryEnableSound]);
+  }, [heroVideoId, isDesktop, startPlayback, syncMuteState, tryEnableSound]);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
