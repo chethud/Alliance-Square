@@ -54,14 +54,14 @@ function ProjectListItem({
   onSelect: () => void;
 }) {
   return (
-    <li className="border-b border-light-gray/60 last:border-b-0">
+    <li className="w-full overflow-hidden rounded-2xl border border-light-gray/70 bg-white shadow-subtle sm:w-[280px] sm:shrink-0 sm:snap-start lg:w-auto lg:rounded-none lg:border-0 lg:border-b lg:border-light-gray/60 lg:bg-transparent lg:shadow-none lg:last:border-b-0">
       <button
         type="button"
         onMouseEnter={onSelect}
         onFocus={onSelect}
         onClick={onSelect}
         className={cn(
-          "group relative flex w-full items-start gap-3 overflow-hidden px-4 py-3.5 text-left transition-colors",
+          "group relative flex h-full w-full items-start gap-3 overflow-hidden px-4 py-4 text-left transition-colors lg:py-3.5",
           isActive ? "bg-brand-cyan/8" : "hover:bg-off-white"
         )}
       >
@@ -122,8 +122,12 @@ export function MysuruMap() {
           description="Explore Alliance Square projects across Mysuru and key growth corridors."
         />
 
-        <div className="mt-8 grid items-stretch gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="relative h-[300px] overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle sm:h-[360px] lg:col-span-8 lg:h-[640px]">
+        {/* ── MOBILE layout: sticky map, scrollable project list below ── */}
+        {/* ── DESKTOP (lg+): side-by-side grid, unchanged             ── */}
+
+        {/* Sticky map — mobile only */}
+        <div className="sticky top-[var(--site-header-height,4.0625rem)] z-20 mt-6 lg:hidden">
+          <div className="relative h-[240px] overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle sm:h-[280px]">
             <div className="absolute inset-0 z-0">
               <MysuruMapView
                 markers={mapMarkers}
@@ -131,7 +135,109 @@ export function MysuruMap() {
                 onMarkerHover={setActiveMarker}
               />
             </div>
+            <div className="pointer-events-none absolute inset-0 z-10">
+              <div className="pointer-events-auto absolute bottom-2 left-2 right-2 rounded-xl border border-light-gray/80 bg-white/95 px-3 py-2 shadow-premium backdrop-blur-sm">
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-cool-gray">
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-brand-cyan shadow-glow" />
+                    Alliance Square Projects
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block h-0.5 w-5 border-t-2 border-dashed border-cool-gray" />
+                    Growth Corridors
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        {/* Scrollable content below the sticky map — mobile only */}
+        <div className="mt-3 space-y-3 lg:hidden">
+          {/* Active project preview card */}
+          <div className="relative flex h-[220px] shrink-0 flex-col overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle sm:h-[260px]">
+            <AnimatePresence mode="wait" initial={false}>
+              {active ? (
+                <motion.div
+                  key={active.projectSlug}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex h-full min-h-0 flex-col"
+                >
+                  <div className="relative min-h-0 flex-1 bg-off-white">
+                    <Image
+                      src={active.heroImage}
+                      alt={active.name}
+                      fill
+                      className={mapPreviewImageClass[active.projectSlug] ?? "object-cover object-center"}
+                      sizes="(max-width: 767px) 100vw, 340px"
+                    />
+                  </div>
+                  <div className="shrink-0 border-t border-light-gray/60 bg-white p-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-base font-bold leading-tight text-charcoal">{active.name}</h3>
+                      {activeStatus && <ProjectStatusBadge status={activeStatus} />}
+                    </div>
+                    <p className="mt-1 text-xs font-semibold text-cool-gray">{active.priceLabel}</p>
+                    <p className="mt-0.5 text-[11px] leading-snug text-cool-gray">{active.location}</p>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="placeholder"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex h-full items-center justify-center px-6 text-center text-sm text-cool-gray"
+                >
+                  Tap a project on the map or list below to preview
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Project list — stacked vertically */}
+          <ul className="space-y-2">
+            {runningMarkers.map((m) => (
+              <ProjectListItem
+                key={m.projectSlug}
+                marker={m}
+                status="running"
+                isActive={activeMarker === m.projectSlug}
+                onSelect={() => setActiveMarker(m.projectSlug)}
+              />
+            ))}
+            {completedMarkers.length > 0 && (
+              <li className="border-b border-light-gray/60 bg-off-white/80 px-4 py-2">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-cool-gray">
+                  Completed Projects
+                </p>
+              </li>
+            )}
+            {completedMarkers.map((m) => (
+              <ProjectListItem
+                key={m.projectSlug}
+                marker={m}
+                status="completed"
+                isActive={activeMarker === m.projectSlug}
+                onSelect={() => setActiveMarker(m.projectSlug)}
+              />
+            ))}
+          </ul>
+        </div>
+
+        {/* ── DESKTOP (lg+) side-by-side grid ── */}
+        <div className="mt-8 hidden items-stretch gap-8 lg:grid lg:grid-cols-12">
+          <div className="relative col-span-8 h-[640px] overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle">
+            <div className="absolute inset-0 z-0">
+              <MysuruMapView
+                markers={mapMarkers}
+                activeMarker={activeMarker}
+                onMarkerHover={setActiveMarker}
+              />
+            </div>
             <div className="pointer-events-none absolute inset-0 z-10">
               <div className="pointer-events-auto absolute bottom-4 left-4 w-[calc(100%-2rem)] max-w-[300px] rounded-2xl border border-light-gray/80 bg-white/95 p-4 shadow-premium backdrop-blur-sm">
                 <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-cool-gray">
@@ -148,8 +254,8 @@ export function MysuruMap() {
             </div>
           </div>
 
-          <div className="flex min-h-[320px] flex-col sm:min-h-[360px] lg:col-span-4 lg:h-[640px] lg:min-h-0">
-            <div className="relative flex h-[280px] shrink-0 flex-col overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle sm:h-[300px] lg:h-[340px]">
+          <div className="col-span-4 flex h-[640px] flex-col">
+            <div className="relative flex h-[340px] shrink-0 flex-col overflow-hidden rounded-2xl border border-light-gray/80 bg-white shadow-subtle">
               <AnimatePresence mode="wait" initial={false}>
                 {active ? (
                   <motion.div
@@ -169,9 +275,9 @@ export function MysuruMap() {
                         sizes="340px"
                       />
                     </div>
-                    <div className="shrink-0 border-t border-light-gray/60 bg-white p-4 lg:p-5">
+                    <div className="shrink-0 border-t border-light-gray/60 bg-white p-5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-lg font-bold leading-tight text-charcoal lg:text-xl">{active.name}</h3>
+                        <h3 className="text-xl font-bold leading-tight text-charcoal">{active.name}</h3>
                         {activeStatus && <ProjectStatusBadge status={activeStatus} />}
                       </div>
                       <p className="mt-1.5 text-sm font-semibold text-cool-gray">{active.priceLabel}</p>
@@ -186,7 +292,7 @@ export function MysuruMap() {
                     exit={{ opacity: 0 }}
                     className="flex h-full items-center justify-center px-6 text-center text-sm text-cool-gray"
                   >
-                    Tap a project below to preview
+                    Tap a project to preview
                   </motion.div>
                 )}
               </AnimatePresence>

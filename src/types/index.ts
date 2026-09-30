@@ -36,8 +36,12 @@ export interface Project {
   gallery: string[];
   listingDescription?: string;
   brochureUrl?: string;
-  /** YouTube Shorts video ID (from youtube.com/shorts/{id}) */
+  /** YouTube video that plays beside the project at the top */
   youtubeShortId?: string;
+  /** YouTube videos shown under the gallery */
+  youtubeGalleryIds?: string[];
+  /** Older single gallery video, kept so existing content still loads */
+  youtubeGalleryId?: string;
 }
 
 export interface Testimonial {

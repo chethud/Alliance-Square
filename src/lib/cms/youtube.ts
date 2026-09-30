@@ -21,3 +21,19 @@ export function parseYouTubeId(value: string) {
 
   return VIDEO_ID.test(candidate) ? candidate : "";
 }
+
+export function youtubeWatchUrl(value: string) {
+  const id = parseYouTubeId(value);
+  return id ? `https://www.youtube.com/watch?v=${id}` : "";
+}
+
+export function galleryVideoIds(project: { youtubeGalleryIds?: string[]; youtubeGalleryId?: string }) {
+  const values = [...(project.youtubeGalleryIds ?? [])];
+  if (project.youtubeGalleryId) values.push(project.youtubeGalleryId);
+  const ids: string[] = [];
+  for (const value of values) {
+    const id = parseYouTubeId(value);
+    if (id && !ids.includes(id)) ids.push(id);
+  }
+  return ids;
+}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Gallery } from "@/components/projects/Gallery";
+import { YouTubeShortEmbed } from "@/components/projects/YouTubeShortEmbed";
 import { ProjectHeroSection } from "@/components/projects/ProjectHeroSection";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { SiteVisitForm } from "@/components/forms/SiteVisitForm";
@@ -12,6 +13,7 @@ import { FadeIn } from "@/components/ui/Motion";
 import { BackButton } from "@/components/ui/BackButton";
 import { ProjectSchema } from "@/components/seo/StructuredData";
 import { getProjectBySlug, getRelatedProjects, projects, layoutsBrochureUrl } from "@/data/projects";
+import { galleryVideoIds } from "@/lib/cms/youtube";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
@@ -176,6 +178,23 @@ export default async function ProjectPage({ params }: PageProps) {
                 </div>
               </div>
             </FadeIn>
+
+            {galleryVideoIds(project).length > 0 ? (
+              <FadeIn>
+                <div>
+                  <h2 className="font-bold text-3xl text-charcoal">Videos</h2>
+                  <div className="mt-6 flex flex-col items-center gap-6">
+                    {galleryVideoIds(project).map((videoId) => (
+                      <YouTubeShortEmbed
+                        key={videoId}
+                        videoId={videoId}
+                        title={`${project.name} gallery video`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </FadeIn>
+            ) : null}
           </div>
 
           <div className="lg:col-span-4">

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isAdminSession } from "@/lib/cms/auth";
 import { loadCmsContent, type SiteContent } from "@/lib/cms/content";
 import { writeJson, priceLabelFromSqft, slugify } from "@/lib/cms/fs";
-import { parseYouTubeId } from "@/lib/cms/youtube";
+import { galleryVideoIds, parseYouTubeId } from "@/lib/cms/youtube";
 import type { BlogPost, CmsProject, CompanyStats } from "@/types";
 
 export async function GET() {
@@ -57,6 +57,7 @@ export async function POST(request: Request) {
       const slug = slugify(project.slug || project.name);
       const price = Number(project.pricePerSqft) || 0;
       const youtubeShortId = parseYouTubeId(project.youtubeShortId ?? "");
+      const youtubeGalleryIds = galleryVideoIds(project);
       return {
         ...project,
         id: slug,
@@ -69,6 +70,8 @@ export async function POST(request: Request) {
         amenities: project.amenities?.length ? project.amenities : ["Wide Roads", "Street Lighting"],
         facilities: project.facilities?.length ? project.facilities : ["Wide Internal Roads"],
         youtubeShortId: youtubeShortId || undefined,
+        youtubeGalleryId: undefined,
+        youtubeGalleryIds: youtubeGalleryIds.length ? youtubeGalleryIds : undefined,
         location: {
           area: project.location?.area || "",
           city: project.location?.city || "Mysuru",

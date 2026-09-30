@@ -17,7 +17,7 @@ import {
   inputClass,
   labelClass,
 } from "@/components/admin/cms-ui";
-import { parseYouTubeId } from "@/lib/cms/youtube";
+import { galleryVideoIds, parseYouTubeId, youtubeWatchUrl } from "@/lib/cms/youtube";
 
 type Tab = "insights" | "testimonials" | "layouts" | "site";
 
@@ -84,6 +84,7 @@ function emptyLayout(): CmsProject {
     heroImage: "",
     gallery: [],
     youtubeShortId: "",
+    youtubeGalleryIds: [],
     mapStatus: "running",
     showOnLayouts: true,
   };
@@ -663,6 +664,12 @@ function LayoutEditor({
 }) {
   const approvals: ApprovalType[] = ["MUDA", "MDA", "DTCP", "RERA"];
   const filters: ProjectFilter[] = ["premium", "muda", "dtcp", "ready", "investment"];
+  const [galleryDraft, setGalleryDraft] = useState("");
+  const savedGalleryVideos = galleryVideoIds(layout);
+
+  useEffect(() => {
+    setGalleryDraft("");
+  }, [layout.slug]);
 
   return (
     <EditorPane
@@ -727,6 +734,143 @@ function LayoutEditor({
             onChange={(event) => onChange({ ...layout, plotSizes: splitList(event.target.value) })}
           />
         </Field>
+      </div>
+      <Field label="Starting video">
+        <input
+          className={inputClass}
+          value={layout.youtubeShortId ?? ""}
+          onChange={(event) => onChange({ ...layout, youtubeShortId: event.target.value })}
+          placeholder="https://www.youtube.com/shorts/..."
+        />
+        <p className="mt-1.5 text-xs text-cool-gray">
+          Plays beside the project at the top of the page. Paste a Shorts, watch, or embed link. Clear this field and save to remove it.
+        </p>
+      </Field>
+      <div>
+        <span className={labelClass}>Gallery YouTube videos</span>
+        <p className="mt-1.5 text-xs text-cool-gray">
+          These play in the Videos section after the gallery. Remove a saved link, or paste another one and click Add video. Then click Save layouts.
+        </p>
+        {savedGalleryVideos.length > 0 ? (
+          <ul className="mt-3 space-y-2">
+            {savedGalleryVideos.map((id) => {
+              const url = youtubeWatchUrl(id);
+              return (
+                <li key={id} className="flex items-center gap-3 border border-light-gray bg-white px-3 py-2">
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-w-0 flex-1 truncate text-sm text-brand-cyan hover:underline"
+                  >
+                    {url}
+                  </a>
+                  <button
+                    type="button"
+                    className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-cool-gray hover:text-red-600"
+                    onClick={() =>
+                      onChange({
+                        ...layout,
+                        youtubeGalleryId: undefined,
+                        youtubeGalleryIds: savedGalleryVideos.filter((item) => item !== id),
+                      })
+                    }
+                  >
+                    Remove
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-cool-gray">No gallery videos yet.</p>
+        )}
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+          <input
+            className={`${inputClass} mt-0`}
+            value={galleryDraft}
+            onChange={(event) => setGalleryDraft(event.target.value)}
+            placeholder="https://www.youtube.com/watch?v=..."
+          />
+          <button
+            type="button"
+            className="shrink-0 bg-charcoal px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-white hover:bg-deep-blue"
+            onClick={() => {
+              const id = parseYouTubeId(galleryDraft);
+              if (!id) {
+                onNotice("Paste a valid YouTube link.");
+                return;
+              }
+              if (savedGalleryVideos.includes(id)) {
+                onNotice("That video is already in the list.");
+                return;
+              }
+              onChange({
+                ...layout,
+                youtubeGalleryId: undefined,
+                youtubeGalleryIds: [...savedGalleryVideos, id],
+              });
+              setGalleryDraft("");
+              onNotice("Video added. Save layouts to publish.");
+            }}
+          >
+            Add video
+          </button>
+        </div>
+      </div>
+      <div>
+        <span className={labelClass}>Gallery images</span>
+        <p className="mt-1.5 text-xs text-cool-gray">
+          These photos appear in the Gallery section. Upload one or more, then click Save layouts.
+        </p>
+        {layout.gallery.length > 0 ? (
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {layout.gallery.map((url) => (
+              <div key={url} className="border border-light-gray bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="aspect-[4/3] w-full object-cover" />
+                <button
+                  type="button"
+                  className="w-full px-2 py-1.5 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-cool-gray hover:text-red-600"
+                  onClick={() =>
+                    onChange({
+                      ...layout,
+                      gallery: layout.gallery.filter((item) => item !== url),
+                    })
+                  }
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-cool-gray">No gallery images yet.</p>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="mt-3 block w-full text-sm text-cool-gray file:mr-3 file:border-0 file:bg-charcoal file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:tracking-[0.12em] file:text-white"
+          onChange={async (event) => {
+            const files = [...(event.target.files ?? [])];
+            event.target.value = "";
+            if (files.length === 0) return;
+            try {
+              const uploaded: string[] = [];
+              for (const file of files) {
+                uploaded.push(await uploadImage(file, "projects", layout.name || "layout"));
+              }
+              onChange({
+                ...layout,
+                gallery: [...layout.gallery, ...uploaded.filter((url) => !layout.gallery.includes(url))],
+              });
+              onNotice("Gallery images uploaded. Save layouts to publish.");
+            } catch (error) {
+              onNotice(error instanceof Error ? error.message : "Upload failed.");
+            }
+          }}
+        />
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="Map latitude">
@@ -818,17 +962,6 @@ function LayoutEditor({
           value={layout.highlights.join(", ")}
           onChange={(event) => onChange({ ...layout, highlights: splitList(event.target.value) })}
         />
-      </Field>
-      <Field label="YouTube Shorts link">
-        <input
-          className={inputClass}
-          value={layout.youtubeShortId ?? ""}
-          onChange={(event) => onChange({ ...layout, youtubeShortId: event.target.value })}
-          placeholder="https://www.youtube.com/shorts/..."
-        />
-        <p className="mt-1.5 text-xs text-cool-gray">
-          Paste the normal Shorts or watch link. Embed links also work.
-        </p>
       </Field>
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="Map status">

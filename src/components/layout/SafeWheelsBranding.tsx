@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { company } from "@/data/company";
 
 export function SafeWheelsBranding() {
@@ -28,14 +27,13 @@ export function SafeWheelsBranding() {
                 id="footer-welcome-heading"
                 className="text-base font-bold uppercase tracking-[0.06em] text-charcoal sm:text-lg"
               >
-                Welcome to Alliance Square
+                {company.footerWelcomeTitle}
               </h2>
-              <p className="mt-2.5 text-xs leading-[1.65] text-charcoal/85 sm:text-sm md:text-justify">
-                <Link href="/" className="font-semibold text-brand-cyan transition-colors hover:text-deep-blue">
-                  {company.shortName}
-                </Link>{" "}
-                {company.footerWelcome}
-              </p>
+              <div className="mt-2.5 space-y-2.5 text-xs leading-[1.65] text-charcoal/85 sm:text-sm md:text-justify">
+                {company.footerWelcome.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </div>
           </div>
         </div>

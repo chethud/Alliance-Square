@@ -103,36 +103,18 @@ export function Footer() {
                   >
                     {contact.corporateOffice.phone}
                   </a>
-                  <a href={`tel:${contact.mobile[0]}`} className="transition-colors hover:text-brand-cyan">
-                    {contact.mobile[0]}
-                  </a>
+                  {contact.mobile.map((number) => (
+                    <a key={number} href={`tel:${number}`} className="transition-colors hover:text-brand-cyan">
+                      {number}
+                    </a>
+                  ))}
                 </span>
               </FooterContactItem>
-              <div className="hidden flex-wrap items-center gap-3 pl-7 md:flex">
-                <SocialLinks />
-              </div>
             </div>
           </div>
 
           <div className="min-w-0 md:col-span-4">
-            <FooterHeading>Sales Office</FooterHeading>
-            <div className="mt-3 space-y-2.5 md:mt-5 md:space-y-4">
-              <FooterContactItem icon={MapPin}>
-                <AddressLines lines={contact.salesOffice.address} />
-              </FooterContactItem>
-              <FooterContactItem icon={Phone}>
-                <span className="flex flex-col gap-0.5">
-                  <a
-                    href={`tel:${contact.salesOffice.phone.replace(/-/g, "")}`}
-                    className="transition-colors hover:text-brand-cyan"
-                  >
-                    {contact.salesOffice.phone}
-                  </a>
-                  <a href={`tel:${contact.mobile[1]}`} className="transition-colors hover:text-brand-cyan">
-                    {contact.mobile[1]}
-                  </a>
-                </span>
-              </FooterContactItem>
+            <div className="space-y-2.5 md:space-y-4">
               <FooterContactItem icon={Mail}>
                 <a href={`mailto:${company.email}`} className="break-all transition-colors hover:text-brand-cyan">
                   {company.email}
@@ -144,6 +126,9 @@ export function Footer() {
                   <span className="hidden md:inline">{contact.salesOffice.hours}</span>
                 </FooterContactItem>
               )}
+              <div className="hidden flex-wrap items-center gap-3 pl-7 md:flex">
+                <SocialLinks />
+              </div>
             </div>
           </div>
         </div>

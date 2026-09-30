@@ -1,11 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { heroVideoId } from "@/data/company";
+import { heroSliderImages } from "@/data/images";
 
 const HERO_VIDEO_ID = heroVideoId;
+const MOBILE_HERO_IMAGE = heroSliderImages[0];
 
 interface YTPlayer {
   mute: () => void;
@@ -58,6 +61,7 @@ export function Hero() {
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const syncMuteState = useCallback((player: YTPlayer) => {
     setIsMuted(player.isMuted());
@@ -97,6 +101,7 @@ export function Hero() {
   );
 
   const initPlayer = useCallback(() => {
+    if (!isDesktop) return;
     if (!playerContainerRef.current || playerRef.current || !window.YT?.Player) return;
 
     playerRef.current = new window.YT.Player(playerContainerRef.current, {
@@ -190,9 +195,31 @@ export function Hero() {
         },
       },
     });
-  }, [startPlayback, syncMuteState, tryEnableSound]);
+  }, [isDesktop, startPlayback, syncMuteState, tryEnableSound]);
 
   useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const updateViewport = () => {
+      const desktop = media.matches;
+      setIsDesktop(desktop);
+
+      if (!desktop && playerRef.current) {
+        playerRef.current.destroy();
+        playerRef.current = null;
+        isPlayingRef.current = false;
+        setIsPlaying(false);
+        setIsReady(false);
+        setIsMuted(true);
+      }
+    };
+
+    updateViewport();
+    media.addEventListener("change", updateViewport);
+    return () => media.removeEventListener("change", updateViewport);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
     if (!isPlaying || !isInViewRef.current) return;
 
     const player = playerRef.current;
@@ -210,9 +237,10 @@ export function Hero() {
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, [isPlaying, tryEnableSound]);
+  }, [isDesktop, isPlaying, tryEnableSound]);
 
   useEffect(() => {
+    if (!isDesktop) return;
     if (!isReady) return;
 
     const onFirstInteraction = () => {
@@ -232,9 +260,10 @@ export function Hero() {
       window.removeEventListener("keydown", onFirstInteraction);
       window.removeEventListener("touchstart", onFirstInteraction);
     };
-  }, [isReady, tryEnableSound]);
+  }, [isDesktop, isReady, tryEnableSound]);
 
   useEffect(() => {
+    if (!isDesktop) return;
     if (playerRef.current) return;
 
     let cancelled = false;
@@ -276,9 +305,10 @@ export function Hero() {
       if (pollId) window.clearInterval(pollId);
       window.onYouTubeIframeAPIReady = previousReady;
     };
-  }, [initPlayer]);
+  }, [initPlayer, isDesktop]);
 
   useEffect(() => {
+    if (!isDesktop) return;
     if (!isReady || !sectionRef.current) return;
 
     const observer = new IntersectionObserver(
@@ -305,7 +335,7 @@ export function Hero() {
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
-  }, [isReady, resumeHeroPlayback]);
+  }, [isDesktop, isReady, resumeHeroPlayback]);
 
   useEffect(() => {
     return () => {
@@ -336,10 +366,24 @@ export function Hero() {
       aria-label="Hero"
     >
       <div className="absolute inset-0">
+        <div className="absolute inset-0 md:hidden">
+          <Image
+            src={MOBILE_HERO_IMAGE}
+            alt="Alliance Square Properties hero"
+            fill
+            priority
+            quality={90}
+            sizes="100vw"
+            className="hero-image-clarity object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-dark/68 via-dark/24 to-dark/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-dark/28 via-transparent to-transparent" />
+        </div>
+
         <div
           ref={shellRef}
           className={cn(
-            "hero-video-shell absolute inset-0 overflow-hidden transition-opacity duration-700",
+            "hero-video-shell absolute inset-0 hidden overflow-hidden transition-opacity duration-700 md:block",
             !isReady && "opacity-0",
             !isInView && "pointer-events-none opacity-0"
           )}
@@ -352,7 +396,7 @@ export function Hero() {
 
         {/* Blocks all taps from reaching the YouTube iframe */}
         <div
-          className="hero-video-blocker absolute inset-0 z-[15]"
+          className="hero-video-blocker absolute inset-0 z-[15] hidden md:block"
           aria-hidden="true"
           onPointerDown={(event) => {
             event.preventDefault();
@@ -368,8 +412,8 @@ export function Hero() {
       <button
         type="button"
         onClick={toggleMute}
-        disabled={!isReady}
-        className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-dark/45 text-white backdrop-blur-sm transition-colors hover:bg-dark/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-not-allowed disabled:opacity-40 sm:left-6 md:bottom-8 md:left-8"
+        disabled={!isReady || !isDesktop}
+        className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-dark/45 text-white backdrop-blur-sm transition-colors hover:bg-dark/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-not-allowed disabled:opacity-40 sm:left-6 md:bottom-8 md:left-8 md:flex"
         aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
         aria-pressed={!isMuted}
       >

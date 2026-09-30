@@ -70,17 +70,7 @@ export function Navbar() {
               </a>
             </div>
 
-            <div className="flex items-center justify-end gap-1.5 sm:gap-2 lg:hidden">
-              <a
-                href={company.phoneHref}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-light-gray bg-white text-brand-cyan transition-colors hover:border-brand-cyan/30 hover:bg-brand-cyan/5"
-                aria-label={`Call ${company.phone}`}
-              >
-                <Phone className="h-4 w-4" />
-              </a>
-              <Link href="/contact#site-visit" className="btn-primary px-3 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs">
-                Visit
-              </Link>
+            <div className="flex items-center justify-end lg:hidden">
               <button
                 type="button"
                 onClick={() => setMobileOpen(!mobileOpen)}
