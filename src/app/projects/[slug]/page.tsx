@@ -13,7 +13,7 @@ import { FadeIn } from "@/components/ui/Motion";
 import { BackButton } from "@/components/ui/BackButton";
 import { ProjectSchema } from "@/components/seo/StructuredData";
 import { getProjectBySlug, getRelatedProjects, projects, layoutsBrochureUrl } from "@/data/projects";
-import { galleryVideoIds } from "@/lib/cms/youtube";
+import { galleryVideoIds } from "@/lib/youtube";
 import { createPageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";

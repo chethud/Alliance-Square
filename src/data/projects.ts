@@ -482,28 +482,7 @@ export const catalogCompletedMapMarkerOrder = [
   "dhatri-square",
 ] as const;
 
-export function catalogProjectsAsCms(): CmsProject[] {
-  const running = new Set<string>(catalogRunningMapMarkerOrder);
-  return catalogProjects.map((project) => ({
-    ...project,
-    mapStatus: running.has(project.slug) ? "running" : "completed",
-    showOnLayouts: true,
-  }));
-}
-
-export function mergeCmsLayouts(overrides: CmsProject[]): CmsProject[] {
-  const bySlug = new Map(
-    overrides.filter((project) => project.slug).map((project) => [project.slug, project])
-  );
-  const catalog = catalogProjectsAsCms();
-  const catalogSlugs = new Set(catalog.map((project) => project.slug));
-  return [
-    ...catalog.map((project) => bySlug.get(project.slug) ?? project),
-    ...overrides.filter((project) => project.slug && !catalogSlugs.has(project.slug)),
-  ];
-}
-
-export function mergeProjects(catalog: Project[], overrides: CmsProject[]): Project[] {
+function mergeProjects(catalog: Project[], overrides: CmsProject[]): Project[] {
   const bySlug = new Map(
     overrides.filter((project) => project.slug).map((project) => [project.slug, toProject(project)])
   );

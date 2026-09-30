@@ -1,6 +1,6 @@
 const VIDEO_ID = /^[\w-]{11}$/;
 
-export function parseYouTubeId(value: string) {
+function parseYouTubeId(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "";
   if (VIDEO_ID.test(trimmed)) return trimmed;
@@ -20,11 +20,6 @@ export function parseYouTubeId(value: string) {
   }
 
   return VIDEO_ID.test(candidate) ? candidate : "";
-}
-
-export function youtubeWatchUrl(value: string) {
-  const id = parseYouTubeId(value);
-  return id ? `https://www.youtube.com/watch?v=${id}` : "";
 }
 
 export function galleryVideoIds(project: { youtubeGalleryIds?: string[]; youtubeGalleryId?: string }) {
