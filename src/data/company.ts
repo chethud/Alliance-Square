@@ -136,6 +136,7 @@ export const navLinks = [
   { label: "Layouts", href: "/layouts" },
   { label: "About Us", href: "/about" },
   { label: "Contact Us", href: "/contact" },
+  { label: "Verify", href: "/verify" },
 ];
 
 export const footerLinks = {
@@ -150,5 +151,6 @@ export const footerLinks = {
     { label: "Testimonials", href: "/testimonials" },
     { label: "FAQs", href: "/faqs" },
     { label: "Contact Us", href: "/contact" },
+    { label: "Verify", href: "/verify" },
   ],
 };

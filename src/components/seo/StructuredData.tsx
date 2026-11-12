@@ -84,6 +84,25 @@ export function ContactPageSchema() {
   );
 }
 
+export function VerifyPageSchema() {
+  return (
+    <JsonLd
+      data={[
+        buildWebPageSchema({
+          path: "/verify",
+          title: "Verify an Alliance Square Advisor",
+          description:
+            "Check a mobile number against official Alliance Square advisors before you share documents or make a payment.",
+        }),
+        buildBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Verify", path: "/verify" },
+        ]),
+      ]}
+    />
+  );
+}
+
 export function InsightsIndexSchema() {
   return (
     <JsonLd

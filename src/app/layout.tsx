@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 import { OrganizationSchema } from "@/components/seo/StructuredData";
-import { SiteChrome } from "@/components/layout/SiteChrome";
+import { ConditionalChrome } from "@/components/layout/ConditionalChrome";
 import { CmsProvider } from "@/components/cms/CmsProvider";
 import { rootMetadata } from "@/lib/seo/metadata";
 import { getPublished } from "@/lib/published";
@@ -29,7 +29,7 @@ export default async function RootLayout({
         />
         <CmsProvider value={published}>
           <OrganizationSchema />
-          <SiteChrome>{children}</SiteChrome>
+          <ConditionalChrome>{children}</ConditionalChrome>
         </CmsProvider>
       </body>
     </html>

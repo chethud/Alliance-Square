@@ -24,6 +24,7 @@ export async function GET() {
     `- Layouts / plots: ${absoluteUrl("/layouts")}`,
     `- About: ${absoluteUrl("/about")}`,
     `- Contact: ${absoluteUrl("/contact")}`,
+    `- Verify advisor: ${absoluteUrl("/verify")}`,
     `- Insights / blog: ${absoluteUrl("/insights")}`,
     `- FAQs: ${absoluteUrl("/faqs")}`,
     `- Testimonials: ${absoluteUrl("/testimonials")}`,
