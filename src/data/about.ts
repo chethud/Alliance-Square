@@ -15,23 +15,23 @@ export const aboutServices = [
     icon: "/images/about/real_estate_investments.png",
   },
   {
-    title: "Documentation Services",
-    icon: "/images/about/documentation_services.png",
-  },
-  {
-    title: "Sale & Purchase Services",
+    title: "Residential plots across Mysuru",
     icon: "/images/about/sale___purchase_services.png",
   },
   {
-    title: "After Investment Services",
+    title: "Layout Sales Services",
+    icon: "/images/about/real_estate_investments.png",
+  },
+  {
+    title: "After Sales Support",
     icon: "/images/about/after_investment_services.png",
   },
   {
-    title: "Transfers & Agreements",
-    icon: "/images/about/transfers___agreements.png",
+    title: "Documentation & Agreements",
+    icon: "/images/about/documentation_services.png",
   },
   {
-    title: "Consultancy Services For NRI",
+    title: "Real Estate Consultancy Services",
     icon: "/images/about/consultancy_services_for_nri.png",
   },
 ] as const;
